@@ -56,7 +56,7 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 		String selectedServer = mCallback.getSelectedServer();
 		Log.i("yeet", "youuu sülüctäd le serve du " + selectedServer);
 		ArrayList<Connection> connectionSettings = readConnectionSettings();
-		if(!mCallback.getSelectedServer().equals("Add server")){
+		if(!mCallback.getSelectedServer().equals("Add server")){  //
 			int i;
 			exit:
 			for (i = 0; i < connectionSettings.size(); i++){

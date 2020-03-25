@@ -89,15 +89,20 @@ public class Connection implements Serializable {
 			@Override
 			public void run() {
 				try {
+
 					ftp = new FTPClient();
 					ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
 					int reply;
-					ftp.connect(ipAddress);
+					Log.i ("yeet", "reply");
+					ftp.connect(ipAddress); //errrrororo //ToDO fixen
+					Log.i ("yeet", "ftpconnect");
 					reply = ftp.getReplyCode();
+
 					if (!FTPReply.isPositiveCompletion(reply)) {
 						ftp.disconnect();
 						throw new Exception("Exception in connecting to FTP Server");
 					}
+
 					ftp.login(username, password);
 					ftp.setFileType(FTP.BINARY_FILE_TYPE);
 					ftp.enterLocalPassiveMode();

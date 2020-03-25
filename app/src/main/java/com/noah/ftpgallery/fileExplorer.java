@@ -47,28 +47,36 @@ public class fileExplorer extends AppCompatActivity {
         Intent intent = getIntent();
         String selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
+        Log.i ("yeet", "1");
         try {
             FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
+            Log.i ("yeet", "file");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             connectionSettings = (ArrayList<Connection>) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
             i.printStackTrace();
+            Log.i ("yeet", "catch");
             return;
         } catch (ClassNotFoundException c) {
             c.printStackTrace();
             return;
         }
         Connection selectedConnection = null;
+        Log.i ("yeet", "connect");
         for (int i = 0; i < connectionSettings.size(); i++) {
+            Log.i ("yeet", "connect1");
             if(connectionSettings.get(i).getConnectionName().equals(selectedConnectionName)){
                 selectedConnection = connectionSettings.get(i);
             }
         }
-        selectedConnection.connect();
+        Log.i ("yeet", "vorcobnnect");
+        selectedConnection.connect(); //klappt nicht
+        Log.i ("yeet", "nachconnect");
         selectedConnection.setListHiddenFiles(true);
         FTPFile[] directory = selectedConnection.listDirectory();
+        Log.i ("yeet", "ftp");
         for (int i = 0; i < directory.length; i++) {
             try {
                 Log.i("yeet", directory[i].toString());
