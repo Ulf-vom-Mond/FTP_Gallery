@@ -1,0 +1,87 @@
+<fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.noah.ftpgallery.ui.gallery.GalleryFragment"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.noah.ftpgallery.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_slideshow" />
+
+
+
+        <item
+                    android:id="@+id/nav_home"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="@string/menu_home" />
+                <item
+                    android:id="@+id/nav_gallery"
+                    android:icon="@drawable/ic_menu_gallery"
+                    android:title="@string/menu_gallery" />
+                <item
+                    android:id="@+id/nav_slideshow"
+                    android:icon="@drawable/ic_menu_slideshow"
+                    android:title="@string/menu_slideshow" />
+
+
+                    package com.noah.ftpgallery.ui.generalSettings;
+
+                    import android.os.Bundle;
+
+                    import androidx.appcompat.app.ActionBar;
+                    import androidx.appcompat.app.AppCompatActivity;
+                    import androidx.fragment.app.Fragment;
+                    import androidx.preference.PreferenceFragmentCompat;
+
+                    import com.noah.ftpgallery.R;
+
+                    public class GeneralSettingsActivity extends AppCompatActivity {
+
+                        @Override
+                        protected void onCreate(Bundle savedInstanceState) {
+                            super.onCreate(savedInstanceState);
+                            setContentView(R.layout.settings_activity);
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.settings, new SettingsFragment())
+                                    .commit();
+                            ActionBar actionBar = getSupportActionBar();
+                            if (actionBar != null) {
+                                actionBar.setDisplayHomeAsUpEnabled(true);
+                            }
+                        }
+
+                        public static class SettingsFragment extends PreferenceFragmentCompat {
+                            @Override
+                            public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+                                setPreferencesFromResource(R.xml.root_preferences, rootKey);
+                            }
+                        }
+                    }
+
+
+
+
+
+                    <fragment
+                            android:id="@+id/nav_home_second"
+                            android:name="com.noah.ftpgallery.ui.home.HomeSecondFragment"
+                            android:label="@string/home_second"
+                            tools:layout="@layout/fragment_home_second">
+                            <action
+                                android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
+                                app:destination="@id/nav_home" />
+
+                            <argument
+                                android:name="myArg"
+                                app:argType="string" />
+                        </fragment>
+
+
+
+
+                        <action
+                                    android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
+                                    app:destination="@id/nav_home_second" />

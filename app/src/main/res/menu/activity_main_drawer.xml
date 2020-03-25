@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu android:id="@+id/mainDrawerMenu"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <group android:id="@+id/defaultGroup">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_server"
+            android:title="Server list" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_general_settings"
+            android:title="Settings" />
+        </group>
+        <group android:id="@+id/serverGroup">
+
+        </group>
+        <group android:id="@+id/addServerGroup">
+        <item
+            android:id="@+id/nav_serverSettings"
+            android:icon="@drawable/ic_add_server"
+            android:title="Add server" />
+        </group>
+    </group>
+</menu>
