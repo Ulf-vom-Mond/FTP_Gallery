@@ -2,6 +2,7 @@ package com.noah.ftpgallery;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
@@ -9,6 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 /**
@@ -19,7 +23,7 @@ import android.view.ViewGroup;
 public class file_entry extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
+    private View view;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -55,20 +59,39 @@ public class file_entry extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i("yeet", "7");
+
         super.onCreate(savedInstanceState);
-        Log.i("yeet", "7,1");
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        Log.i("yeet", "7,2");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i("yeet", "8");
+
+        Log.i("yeet", "9"   );
         return inflater.inflate(R.layout.fragment_file_entry, container, false);
+    }
+
+
+    @Override
+    public void onViewCreated (View view, @Nullable Bundle savedInstanceState) {
+       // view = inflater.inflate(R.layout.fragment_file_entry, container,false);
+
+        Log.i("yeet", "8");
+        Bundle hello = getArguments();
+        ArrayList<String> atribute = hello.getStringArrayList("file_attribute");
+        Log.i("yeet", atribute.get(1));
+
+        TextView file_name = getView().findViewById(R.id.file_name);
+        TextView file_size = getView().findViewById(R.id.file_size);
+        TextView file_time = getView().findViewById(R.id.file_date);
+
+        file_name.setText(atribute.get(0));
+        file_size.setText(atribute.get(1));
+       // file_time.setText(atribute.get(2));
     }
 }

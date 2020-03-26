@@ -73,23 +73,27 @@ public class fileExplorer extends AppCompatActivity {
         FTPFile[] directory = selectedConnection.listDirectory();
         Log.i ("yeet", "ftp");
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
-        file_entry fragment = new file_entry();
-        fragmentTransaction.add(R.id.file_entry_container, fragment);
-        fragmentTransaction.commit();
+
+
         for (int i = 0; i < directory.length; i++) { //füllen von applets
 
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
+            file_entry fragment = new file_entry();
+            Bundle testbundle = new Bundle();
+            ArrayList<String> attributes = new ArrayList<String>();
+            attributes.add(directory[i].getName());
+            attributes.add(directory[i].getSize() + "");
+            attributes.add(directory[i].getTimestamp() + "");
+            testbundle.putStringArrayList("file_attribute" , attributes);
 
-          /*  TextView file_name = findViewById(R.id.file).findViewById(R.id.file_name);
-            TextView file_size = findViewById(R.id.file).findViewById(R.id.file_size);
-            TextView file_date = findViewById(R.id.file).findViewById(R.id.file_date);
-            file_name.setText(directory[i].getName());
-            file_size.setText(directory[i].getSize() + "");
-            file_date.setText(directory[i].getTimestamp() + "");*/
+            fragment.setArguments(testbundle);
+            fragmentTransaction.add(R.id.file_entry_container, fragment);
+            fragmentTransaction.commit();
+
 
             try {
-                Log.i("datei", directory[i].toString());
+                //Log.i("yeet", directory[i].toString());
                 //anzeigen von dateien
             }catch (Exception e) {
                 Log.e("yeet", e.toString());
