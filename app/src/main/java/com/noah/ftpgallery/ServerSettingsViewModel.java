@@ -4,4 +4,5 @@ import androidx.lifecycle.ViewModel;
 
 public class ServerSettingsViewModel extends ViewModel {
 	// TODO: Implement the ViewModel
+
 }

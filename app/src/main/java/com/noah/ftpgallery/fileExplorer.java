@@ -12,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -77,9 +81,24 @@ public class fileExplorer extends AppCompatActivity {
         selectedConnection.setListHiddenFiles(true);
         FTPFile[] directory = selectedConnection.listDirectory();
         Log.i ("yeet", "ftp");
-        for (int i = 0; i < directory.length; i++) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
+
+        for (int i = 0; i < directory.length; i++) { //füllen von applets
+            file_entry fragment = new file_entry();
+            fragmentTransaction.add(R.id.file, fragment);
+            fragmentTransaction.commit();
+            TextView file_name = findViewById(R.id.file_name);
+            TextView file_size = findViewById(R.id.file_size);
+            TextView file_date = findViewById(R.id.file_date);
+            file_name.setText(directory[i].getName());
+            file_size.setText(directory[i].getSize() + "");
+            file_date.setText(directory[i].getTimestamp() + "");
+
             try {
                 Log.i("datei", directory[i].toString());
+                //anzeigen von dateien
             }catch (Exception e) {
                 Log.e("yeet", e.toString());
             }
