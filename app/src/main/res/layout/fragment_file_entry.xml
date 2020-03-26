@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".file_entry"
-    android:id="@+id/file">
+    tools:context=".file_entry">
 
     <!-- TODO: Update blank fragment layout -->
 

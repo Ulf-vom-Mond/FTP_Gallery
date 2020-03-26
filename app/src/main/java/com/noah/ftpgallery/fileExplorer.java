@@ -39,15 +39,6 @@ public class fileExplorer extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         Intent intent = getIntent();
         String selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
@@ -84,17 +75,18 @@ public class fileExplorer extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
-
+        file_entry fragment = new file_entry();
+        fragmentTransaction.add(R.id.file_entry_container, fragment);
+        fragmentTransaction.commit();
         for (int i = 0; i < directory.length; i++) { //füllen von applets
-            file_entry fragment = new file_entry();
-            fragmentTransaction.add(R.id.file, fragment);
-            fragmentTransaction.commit();
-            TextView file_name = findViewById(R.id.file_name);
-            TextView file_size = findViewById(R.id.file_size);
-            TextView file_date = findViewById(R.id.file_date);
+
+
+          /*  TextView file_name = findViewById(R.id.file).findViewById(R.id.file_name);
+            TextView file_size = findViewById(R.id.file).findViewById(R.id.file_size);
+            TextView file_date = findViewById(R.id.file).findViewById(R.id.file_date);
             file_name.setText(directory[i].getName());
             file_size.setText(directory[i].getSize() + "");
-            file_date.setText(directory[i].getTimestamp() + "");
+            file_date.setText(directory[i].getTimestamp() + "");*/
 
             try {
                 Log.i("datei", directory[i].toString());
@@ -104,6 +96,7 @@ public class fileExplorer extends AppCompatActivity {
             }
 
         }
-        Log.i("yeet", "nachftp");
+
+
     }
 }
