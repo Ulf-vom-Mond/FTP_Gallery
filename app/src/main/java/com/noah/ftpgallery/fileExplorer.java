@@ -64,27 +64,27 @@ public class fileExplorer extends AppCompatActivity {
             return;
         }
         Connection selectedConnection = null;
-        Log.i ("yeet", "connect");
+
         for (int i = 0; i < connectionSettings.size(); i++) {
-            Log.i ("yeet", "connect1");
+
             if(connectionSettings.get(i).getConnectionName().equals(selectedConnectionName)){
                 selectedConnection = connectionSettings.get(i);
             }
         }
-        Log.i ("yeet", "vorcobnnect");
-        selectedConnection.connect(); //klappt nicht
-        Log.i ("yeet", "nachconnect");
+
+        selectedConnection.connect(); //klappt nicht oder villeicht doch?
+
         selectedConnection.setListHiddenFiles(true);
         FTPFile[] directory = selectedConnection.listDirectory();
         Log.i ("yeet", "ftp");
         for (int i = 0; i < directory.length; i++) {
             try {
-                Log.i("yeet", directory[i].toString());
+                Log.i("datei", directory[i].toString());
             }catch (Exception e) {
                 Log.e("yeet", e.toString());
             }
 
         }
-
+        Log.i("yeet", "nachftp");
     }
 }

@@ -94,8 +94,16 @@ public class Connection implements Serializable {
 					ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
 					int reply;
 					Log.i ("yeet", "reply");
-					ftp.connect(ipAddress); //errrrororo //ToDO fixen
-					Log.i ("yeet", "ftpconnect");
+
+                    try {
+                        ftp.connect(ipAddress); //errrrororo //ToDO fixen
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                    Log.i ("yeet", "ftpconnect");
 					reply = ftp.getReplyCode();
 
 					if (!FTPReply.isPositiveCompletion(reply)) {
