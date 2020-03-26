@@ -7,56 +7,55 @@
     tools:context=".file_entry"
     android:id="@+id/file_fragment">
 
-    <!-- TODO: Update blank fragment layout -->
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_launcher_foreground"
-            tools:src="@tools:sample/avatars" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/file_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Testtext" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_launcher_foreground"
+                tools:src="@tools:sample/avatars" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/file_size"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/file_name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="Testtext" />
 
-                <TextView
-                    android:id="@+id/file_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Date" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/file_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/file_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Date" />
+                </LinearLayout>
             </LinearLayout>
+
+
         </LinearLayout>
-
-
-    </LinearLayout>
 
 </FrameLayout>
