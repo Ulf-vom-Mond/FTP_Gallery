@@ -8,41 +8,34 @@
     tools:context=".fileExplorer"
     android:id="@+id/file_explorer">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
 
             <LinearLayout
+                android:id="@+id/file_entry_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/file_entry_container">
+                android:orientation="vertical">
 
-                </LinearLayout>
-            </ScrollView>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-
-   <!--  <include layout="@layout/content_file_explorer" /> deaktivieren für scrollen-->
-
+    <!--  <include layout="@layout/content_file_explorer" /> deaktivieren für scrollen-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

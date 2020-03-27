@@ -84,7 +84,7 @@ public class fileExplorer extends AppCompatActivity {
             ArrayList<String> attributes = new ArrayList<String>();
             attributes.add(directory[i].getName());
             attributes.add(directory[i].getSize() + "");
-            attributes.add(directory[i].getTimestamp() + "");
+            attributes.add(directory[i].getTimestamp().toString());
             testbundle.putStringArrayList("file_attribute" , attributes);
 
             fragment.setArguments(testbundle);
