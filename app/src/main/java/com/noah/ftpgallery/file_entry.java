@@ -92,6 +92,6 @@ public class file_entry extends Fragment {
 
         file_name.setText(atribute.get(0));
         file_size.setText(atribute.get(1));
-        //file_time.setText(atribute.get(2));
+        file_time.setText(atribute.get(2));
     }
 }

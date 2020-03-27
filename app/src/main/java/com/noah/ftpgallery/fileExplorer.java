@@ -25,6 +25,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
@@ -83,8 +84,9 @@ public class fileExplorer extends AppCompatActivity {
             Bundle testbundle = new Bundle();
             ArrayList<String> attributes = new ArrayList<String>();
             attributes.add(directory[i].getName());
-            attributes.add(directory[i].getSize() + "");
-            attributes.add(directory[i].getTimestamp().toString());
+            attributes.add(formatSize(directory[i].getSize()));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm ");
+            attributes.add(sdf.format(directory[i].getTimestamp().getTime()));
             testbundle.putStringArrayList("file_attribute" , attributes);
 
             fragment.setArguments(testbundle);
@@ -103,4 +105,23 @@ public class fileExplorer extends AppCompatActivity {
 
 
     }
+
+    private static String formatSize (long size) {
+        double sizeDouble = (double) size;
+        String[] sizeAbbreviations = {" B", " kB", " MB", " GB", " TB", " EB"};
+        for (int i = 0; i < (size + "").length(); i++) {
+            if(sizeDouble >= 1000){
+                sizeDouble = (int)(sizeDouble / 10);
+            }else {
+                if (i % 3 == 0) {
+
+                    return (sizeDouble + "").substring(0, (sizeDouble + "").length() > 4 ? 5 : (sizeDouble + "").length()) + sizeAbbreviations[(i + 1) / 3];
+                }else {
+                    sizeDouble = (sizeDouble / 10.0);
+                }
+            }
+        }
+        return size + " B";
+    }
+
 }
