@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class file_entry extends Fragment {
 
     public file_entry() {
         // Required empty public constructor
-        Log.i("yeet", "5");
+
     }
 
     /**
@@ -47,7 +48,6 @@ public class file_entry extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static file_entry newInstance(String param1, String param2) {
-        Log.i("yeet", "6");
         file_entry fragment = new file_entry();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -71,27 +71,67 @@ public class file_entry extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        Log.i("yeet", "9"   );
         return inflater.inflate(R.layout.fragment_file_entry, container, false);
     }
 
 
     @Override
     public void onViewCreated (View view, @Nullable Bundle savedInstanceState) {
-       // view = inflater.inflate(R.layout.fragment_file_entry, container,false);
+        final Thread mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bundle hello = getArguments();
+                final ArrayList<String> attributes = hello.getStringArrayList("file_attribute");
 
-        Log.i("yeet", "8");
-        Bundle hello = getArguments();
-        ArrayList<String> atribute = hello.getStringArrayList("file_attribute");
-        Log.i("yeet", atribute.get(1));
+                TextView file_name = getView().findViewById(R.id.file_name);
+                TextView file_size = getView().findViewById(R.id.file_size);
+                TextView file_time = getView().findViewById(R.id.file_date);
+                final ImageView icon = getView().findViewById(R.id.icon);
 
-        TextView file_name = getView().findViewById(R.id.file_name);
-        TextView file_size = getView().findViewById(R.id.file_size);
-        TextView file_time = getView().findViewById(R.id.file_date);
-
-        file_name.setText(atribute.get(0));
-        file_size.setText(atribute.get(1));
-        file_time.setText(atribute.get(2));
+                file_name.setText(attributes.get(0));
+                file_size.setText(attributes.get(1));
+                file_time.setText(attributes.get(2));
+                icon.setImageResource(R.drawable.unknown);
+                if (attributes.get(3).equals("directory")) {
+                    icon.setImageResource(R.drawable.folder);
+                }
+                int length = attributes.get(0).split("[.]").length;
+                if (length >= 1) {
+                    switch (attributes.get(0).split("[.]")[length - 1].toLowerCase()) {
+                        case "png":
+                            icon.setImageResource(R.drawable.png);
+                            break;
+                        case "jpg":
+                            icon.setImageResource(R.drawable.jpeg);
+                            break;
+                        case "jpeg":
+                            icon.setImageResource(R.drawable.jpeg);
+                            break;
+                        case "svg":
+                            icon.setImageResource(R.drawable.svg);
+                            break;
+                        case "pdf":
+                            icon.setImageResource(R.drawable.pdf);
+                            break;
+                        case "txt":
+                            icon.setImageResource(R.drawable.text);
+                            break;
+                        case "mp4":
+                            icon.setImageResource(R.drawable.webm);
+                            break;
+                        case "wmv":
+                            icon.setImageResource(R.drawable.wmv);
+                            break;
+                        case "avi":
+                            icon.setImageResource(R.drawable.webm);
+                            break;
+                        case "xcf":
+                            icon.setImageResource(R.drawable.xcf);
+                            break;
+                    }
+                }
+            }
+        });
+        mThread.start();
     }
 }

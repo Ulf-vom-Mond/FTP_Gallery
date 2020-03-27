@@ -36,17 +36,14 @@ public class fileExplorer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_explorer);
-        Log.i("yeet", "yeete die nachricht");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         String selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
-        Log.i ("yeet", "1");
         try {
             FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
-            Log.i ("yeet", "file");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             connectionSettings = (ArrayList<Connection>) in.readObject();
             in.close();
@@ -68,11 +65,10 @@ public class fileExplorer extends AppCompatActivity {
             }
         }
 
-        selectedConnection.connect(); //klappt nicht oder villeicht doch?
+        selectedConnection.connect();
 
         selectedConnection.setListHiddenFiles(true);
         FTPFile[] directory = selectedConnection.listDirectory();
-        Log.i ("yeet", "ftp");
 
 
 
@@ -87,19 +83,12 @@ public class fileExplorer extends AppCompatActivity {
             attributes.add(formatSize(directory[i].getSize()));
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm ");
             attributes.add(sdf.format(directory[i].getTimestamp().getTime()));
+            attributes.add(directory[i].isDirectory() ? "directory" : "file");
             testbundle.putStringArrayList("file_attribute" , attributes);
 
             fragment.setArguments(testbundle);
             fragmentTransaction.add(R.id.file_entry_container, fragment);
             fragmentTransaction.commit();
-
-
-            try {
-                //Log.i("yeet", directory[i].toString());
-                //anzeigen von dateien
-            }catch (Exception e) {
-                Log.e("yeet", e.toString());
-            }
 
         }
 
