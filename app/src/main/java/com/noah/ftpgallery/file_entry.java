@@ -82,12 +82,10 @@ public class file_entry extends Fragment {
             public void run() {
                 Bundle hello = getArguments();
                 final ArrayList<String> attributes = hello.getStringArrayList("file_attribute");
-
                 TextView file_name = getView().findViewById(R.id.file_name);
                 TextView file_size = getView().findViewById(R.id.file_size);
                 TextView file_time = getView().findViewById(R.id.file_date);
                 final ImageView icon = getView().findViewById(R.id.icon);
-
                 file_name.setText(attributes.get(0));
                 file_size.setText(attributes.get(1));
                 file_time.setText(attributes.get(2));
