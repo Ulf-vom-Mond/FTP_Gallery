@@ -14,7 +14,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@xml/button"
+        android:id="@+id/entry">
 
         <View
             android:layout_width="fill_parent"

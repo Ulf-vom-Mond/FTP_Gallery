@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
-public class fileExplorer extends AppCompatActivity {
+public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,7 @@ public class fileExplorer extends AppCompatActivity {
         for (int i = 0; i < directory.length; i++) { //füllen von applets
 
             FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             file_entry fragment = new file_entry();
             Bundle testbundle = new Bundle();
             ArrayList<String> attributes = new ArrayList<String>();
@@ -113,4 +114,8 @@ public class fileExplorer extends AppCompatActivity {
         return size + " B";
     }
 
+    @Override
+    public void entryOnClickListener(String fileName) {
+        Log.i("yeet", fileName);
+    }
 }

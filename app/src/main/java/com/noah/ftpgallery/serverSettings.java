@@ -33,7 +33,7 @@ public class serverSettings extends Fragment implements View.OnClickListener {
     private EditText username;
     private EditText password;
     private EditText standardDirectory;
-    private Communication mCallback;
+    private serverSettings.Communication mCallback;
 
     public static serverSettings newInstance() {
 		return new serverSettings();
