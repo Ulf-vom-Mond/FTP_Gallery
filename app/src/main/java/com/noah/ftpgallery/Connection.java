@@ -18,18 +18,16 @@ public class Connection implements Serializable {
 	private int port;
 	private String username;
 	private String password;
-	private String standardDirectory;
+	private String directory;
 	private FTPClient ftp = null;
-	private String currentDirectory;
 
-	public Connection(String connectionName, String ipAddress, int port, String username, String password, String standardDirectory){
+	public Connection(String connectionName, String ipAddress, int port, String username, String password, String directory){
 		this.connectionName = connectionName;
 		this.ipAddress = ipAddress;
 		this.port = port;
 		this.username = username;
 		this.password = password;
-		this.standardDirectory = standardDirectory;
-		this.currentDirectory = standardDirectory;
+		this.directory = directory;
 	}
 
 	public Connection(){
@@ -52,8 +50,8 @@ public class Connection implements Serializable {
 		this.port = port;
 	}
 
-	public void setStandardDirectory(String standardDirectory) {
-		this.standardDirectory = standardDirectory;
+	public void setDirectory(String directory) {
+		this.directory = directory;
 	}
 
 	public void setUsername(String username) {
@@ -76,8 +74,8 @@ public class Connection implements Serializable {
 		return password;
 	}
 
-	public String getStandardDirectory() {
-		return standardDirectory;
+	public String getDirectory() {
+		return directory;
 	}
 
 	public String getUsername() {
@@ -158,7 +156,7 @@ public class Connection implements Serializable {
 			@Override
 			public void run() {
 				try {
-					directoryListing[0] = ftp.listFiles(currentDirectory);
+					directoryListing[0] = ftp.listFiles(directory);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (Exception e) {

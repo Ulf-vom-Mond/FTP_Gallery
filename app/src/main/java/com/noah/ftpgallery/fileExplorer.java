@@ -1,25 +1,15 @@
 package com.noah.ftpgallery;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -32,6 +22,10 @@ import java.util.ArrayList;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener {
+
+    ArrayList<Fragment> fragmentList = new ArrayList<>();
+    FTPFile[] directory;
+    Connection selectedConnection = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +51,8 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             c.printStackTrace();
             return;
         }
-        Connection selectedConnection = null;
+
+        selectedConnection = null;
 
         for (int i = 0; i < connectionSettings.size(); i++) {
 
@@ -65,34 +60,8 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                 selectedConnection = connectionSettings.get(i);
             }
         }
-
         selectedConnection.connect();
-
-        selectedConnection.setListHiddenFiles(true);
-        FTPFile[] directory = selectedConnection.listDirectory();
-
-
-
-        for (int i = 0; i < directory.length; i++) { //füllen von applets
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            file_entry fragment = new file_entry();
-            Bundle testbundle = new Bundle();
-            ArrayList<String> attributes = new ArrayList<String>();
-            attributes.add(directory[i].getName());
-            attributes.add(formatSize(directory[i].getSize()));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm ");
-            attributes.add(sdf.format(directory[i].getTimestamp().getTime()));
-            attributes.add(directory[i].isDirectory() ? "directory" : "file");
-            testbundle.putStringArrayList("file_attribute" , attributes);
-
-            fragment.setArguments(testbundle);
-            fragmentTransaction.add(R.id.file_entry_container, fragment);
-            fragmentTransaction.commit();
-
-        }
-
+        display();
 
     }
 
@@ -117,5 +86,52 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     @Override
     public void entryOnClickListener(String fileName) {
         Log.i("yeet", fileName);
+        int iterator = 0;
+        while (directory[iterator].getName().equals(fileName)) {
+            iterator++;
+        }
+        Log.i("yeet", fileName);
+        if (directory[iterator].isDirectory()) {
+            for (int i = 0; i < fragmentList.size(); i++) {
+                FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.remove(fragmentList.get(i)).commit();
+            }
+            Log.i("yeet", fileName);
+            selectedConnection.setDirectory(selectedConnection.getDirectory() + "/" + fileName);
+            Log.i("yeet", selectedConnection.getDirectory());
+            display();
+        }else {
+
+        }
+
+    }
+
+    private void display() {
+
+        fragmentList.clear();
+        selectedConnection.setListHiddenFiles(true);
+        directory = selectedConnection.listDirectory();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        for (int i = 0; i < directory.length; i++) { //füllen von applets
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentList.add(new file_entry());
+            Bundle testbundle = new Bundle();
+            ArrayList<String> attributes = new ArrayList<String>();
+            attributes.add(directory[i].getName());
+            attributes.add(formatSize(directory[i].getSize()));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm ");
+            attributes.add(sdf.format(directory[i].getTimestamp().getTime()));
+            attributes.add(directory[i].isDirectory() ? "directory" : "file");
+            testbundle.putStringArrayList("file_attribute" , attributes);
+
+            fragmentList.get(fragmentList.size() - 1).setArguments(testbundle);
+            fragmentTransaction.add(R.id.file_entry_container, fragmentList.get(fragmentList.size() - 1));
+            fragmentTransaction.commit();
+
+            findViewById(R.id.file_entry_scroll).scrollTo(0, 0);
+        }
     }
 }

@@ -67,7 +67,7 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 			port.setText("" + connectionSettings.get(i).getPort());
 			username.setText(connectionSettings.get(i).getUsername());
 			password.setText(connectionSettings.get(i).getPassword());
-			standardDirectory.setText(connectionSettings.get(i).getStandardDirectory());
+			standardDirectory.setText(connectionSettings.get(i).getDirectory());
 		}
 		return view;
 

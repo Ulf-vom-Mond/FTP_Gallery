@@ -30,7 +30,7 @@
             <FrameLayout
                 android:layout_width="200px"
                 android:layout_height="match_parent"
-                android:layout_margin="2mm">
+                android:layout_margin="1mm">
 
                 <ImageView
                     android:id="@+id/icon"
