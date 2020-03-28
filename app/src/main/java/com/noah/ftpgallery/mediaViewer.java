@@ -5,10 +5,21 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -43,12 +54,12 @@ public class mediaViewer extends AppCompatActivity {
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+          /*  mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);*/
         }
     };
     private View mControlsView;
@@ -93,21 +104,48 @@ public class mediaViewer extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
+        ImageView imageView = findViewById(R.id.imageView);
 
 
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        Intent intent = getIntent();
+        String fileName = intent.getStringExtra("fileName");
+        String selectedConnectionName = intent.getStringExtra("selectedConnectionName");
+
+        ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
+        try {
+            FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            connectionSettings = (ArrayList<Connection>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            Log.i ("yeet", "catch");
+            return;
+        } catch (ClassNotFoundException c) {
+            c.printStackTrace();
+            return;
+        }
+
+        Connection selectedConnection = null;
+
+        for (int i = 0; i < connectionSettings.size(); i++) {
+
+            if(connectionSettings.get(i).getConnectionName().equals(selectedConnectionName)){
+                selectedConnection = connectionSettings.get(i);
+            }
+        }
+        Log.i("yeet", getCacheDir() + "/" + fileName);
+        selectedConnection.connect();
+        selectedConnection.downloadFile(fileName, getCacheDir() + "/" + fileName);
+        imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileName));
     }
 
     @Override

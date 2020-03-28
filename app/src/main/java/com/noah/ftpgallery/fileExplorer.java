@@ -26,6 +26,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     FTPFile[] directory;
     Connection selectedConnection = null;
+    String selectedConnectionName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        String selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
+        selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
         try {
             FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
@@ -85,24 +86,34 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
     @Override
     public void entryOnClickListener(String fileName) {
-        Log.i("yeet", fileName);
         int iterator = 0;
-        while (directory[iterator].getName().equals(fileName)) {
+        while (!directory[iterator].getName().equals(fileName)) {
             iterator++;
         }
-        Log.i("yeet", fileName);
-        if (directory[iterator].isDirectory()) {
+        if (!directory[iterator].isFile()) {
             for (int i = 0; i < fragmentList.size(); i++) {
                 FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.remove(fragmentList.get(i)).commit();
             }
-            Log.i("yeet", fileName);
             selectedConnection.setDirectory(selectedConnection.getDirectory() + "/" + fileName);
-            Log.i("yeet", selectedConnection.getDirectory());
             display();
         }else {
+            int length = directory[iterator].getName().split("[.]").length;
+            if (length >= 1) {
+                String fileType = directory[iterator].getName().split("[.]")[length - 1].toLowerCase();
+                if (fileType.equals("png") || fileType.equals("jpg") || fileType.equals("jpeg") || fileType.equals("bmp")) {
+                    Intent intent = new Intent(this, mediaViewer.class);
+                    intent.putExtra("fileName", fileName);
+                    intent.putExtra("selectedConnectionName", selectedConnectionName);
+                    selectedConnection.disconnect();
+                    startActivity(intent);
+                }else {
 
+                }
+            }else {
+
+            }
         }
 
     }

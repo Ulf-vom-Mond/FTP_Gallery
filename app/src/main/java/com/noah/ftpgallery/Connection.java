@@ -8,6 +8,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -175,5 +176,24 @@ public class Connection implements Serializable {
 
 	public void setListHiddenFiles(Boolean setting) {
 		ftp.setListHiddenFiles(setting);
+	}
+
+	public void downloadFile(final String fileName, final String localFilePath) {
+		final Thread mThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+			try (FileOutputStream fos = new FileOutputStream(localFilePath)) {
+				ftp.retrieveFile(directory + "/" + fileName, fos);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			}
+		});
+		mThread.start();
+		try {
+			mThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
