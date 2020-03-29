@@ -1,5 +1,6 @@
 package com.noah.ftpgallery;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,6 +9,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+//import android.support.v7.app.AppCompatActivity;
+
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import android.util.Log;
 
@@ -63,6 +71,12 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
         selectedConnection.connect();
         display();
+
+        Spinner spinner = (Spinner) findViewById(R.id.sorting_way); //array mit werten auswählen
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sorting_criteria, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        spinner.setAdapter(adapter);
 
     }
 
