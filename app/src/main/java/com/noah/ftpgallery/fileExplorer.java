@@ -106,7 +106,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                     Intent intent = new Intent(this, mediaViewer.class);
                     intent.putExtra("fileName", fileName);
                     intent.putExtra("selectedConnectionName", selectedConnectionName);
-                    selectedConnection.disconnect();
                     startActivity(intent);
                 }else {
 

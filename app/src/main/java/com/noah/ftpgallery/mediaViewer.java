@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -143,8 +144,11 @@ public class mediaViewer extends AppCompatActivity {
             }
         }
         Log.i("yeet", getCacheDir() + "/" + fileName);
-        selectedConnection.connect();
-        selectedConnection.downloadFile(fileName, getCacheDir() + "/" + fileName);
+
+        if (!new File(getCacheDir() + "/" + fileName).exists()) {
+            selectedConnection.connect();
+            selectedConnection.downloadFile(fileName, getCacheDir() + "/" + fileName);
+        }
         imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileName));
     }
 
