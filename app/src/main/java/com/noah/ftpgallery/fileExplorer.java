@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -115,7 +117,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }else{
             sorting_direction = "desc";
         }       //sortieren
-Log.i("sort", sorting_way + sorting_direction);
 
         for (int i = 0; i < directory.length-1; i++){
             for (int b = 0; b < (directory.length)-i-1; b++){
@@ -203,6 +204,29 @@ Log.i("sort", sorting_way + sorting_direction);
             }
         }
 
+    }
+    private static String[] file_names (FTPFile[] directory){
+        int length;
+        String fileType = "";
+
+        String[] filenames = new String[]{"png","jpg"};
+        List<String> list = Arrays.asList(filenames);
+        ArrayList<Integer> places = new ArrayList<>();
+
+        for (int i=0; i<directory.length; i++){ //zählen wie viele datein von einem typ da sind
+            length = directory[i].getName().split("[.]").length;
+            if (length >= 1) {
+                 fileType = directory[i].getName().split("[.]")[length - 1].toLowerCase();
+            }
+            if (list.contains(fileType)){
+                places.add(i);
+            }
+        }
+        String[] file_names = new String[places.size()];
+
+        for (int i=0; i<places.size(); i++) file_names[i] = directory[places.get(i)].getName();//dateinamen speichern
+
+        return file_names;
     }
 
     private void display() {
