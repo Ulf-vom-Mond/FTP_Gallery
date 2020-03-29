@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import android.util.Log;
@@ -26,6 +27,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
@@ -70,14 +73,17 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             }
         }
         selectedConnection.connect();
-        display();
+
 
         Spinner spinner = (Spinner) findViewById(R.id.sorting_way); //array mit werten auswählen
+        Switch sorting_direction_switch = (Switch)findViewById(R.id.richtung);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sorting_criteria, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+            // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        display();
     }
 
     private static String formatSize (long size) {
@@ -96,6 +102,74 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             }
         }
         return size + " B";
+    }
+
+    private  FTPFile[] sorting (FTPFile[] directory){
+        Spinner spinner = (Spinner) findViewById(R.id.sorting_way); //array mit werten auswählen
+        Switch sorting_direction_switch = (Switch)findViewById(R.id.richtung);
+
+        String sorting_way = spinner.getSelectedItem().toString();  //werte ablesen
+        String sorting_direction;
+        if (!sorting_direction_switch.isChecked()){
+            sorting_direction = "asc";
+        }else{
+            sorting_direction = "desc";
+        }       //sortieren
+Log.i("sort", sorting_way + sorting_direction);
+
+        for (int i = 0; i < directory.length-1; i++){
+            for (int b = 0; b < (directory.length)-i-1; b++){
+                if (true == vergleich(b, directory,sorting_way, sorting_way)){
+                    directory = change(b,directory);
+                }
+            }
+        }
+
+        return directory;
+    }
+
+    private static FTPFile[] change (int b, FTPFile[] directory){
+        FTPFile[] help = new FTPFile[1];
+        help[0] = directory[b];
+        directory[b] = directory[b+1];
+        directory[b+1] = help[0];
+        return directory;
+    }
+
+    private static boolean vergleich (int b,FTPFile[] directory, String sorting_way, String sorting_direction){
+       boolean test = false;
+       String first = "",second  = ""; //true wenn second > first
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+        //sorting_way = "name";
+        switch (sorting_way){       //je nach art sortieren
+            case "Size":
+                if (directory[b+1].getSize() > directory[b].getSize()){
+                test = true;
+                    first = directory[b].getSize() + "";
+                    second = directory[b+1].getSize() + "";
+                }
+                break;
+            case "Date":
+                first = sdf.format(directory[b].getTimestamp().getTime()) + "";
+                second = sdf.format(directory[b+1].getTimestamp().getTime()) + "";
+                if (first.compareToIgnoreCase(second) >= 0){  //wenn second größer ist, dann positive zahl
+                    test = true;
+                }
+                break;
+            default:
+                first = directory[b].getName();
+                second = directory[b+1].getName();
+                if (first.compareToIgnoreCase(second) >= 0){  //wenn second größer ist, dann positive zahl
+                    test = true;
+                }
+        }
+
+                if (sorting_direction == "desc"){   //bei absteigender sortierung alles umkehren
+                    return test;
+                }else{
+                    return !test;
+                }
     }
 
     @Override
@@ -135,7 +209,8 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
         fragmentList.clear();
         selectedConnection.setListHiddenFiles(true);
-        directory = selectedConnection.listDirectory();
+        directory = sorting(selectedConnection.listDirectory());
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
