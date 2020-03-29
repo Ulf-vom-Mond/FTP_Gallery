@@ -19,6 +19,8 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -34,7 +36,7 @@ import java.util.Collections;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
-public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener {
+public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener, View.OnClickListener {
 
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     FTPFile[] directory;
@@ -50,6 +52,9 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
         Intent intent = getIntent();
         selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
+
+        findViewById(R.id.backArrow).setOnClickListener(this);
+
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
         try {
             FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
@@ -195,6 +200,21 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                     Intent intent = new Intent(this, mediaViewer.class);
                     intent.putExtra("fileName", fileName);
                     intent.putExtra("selectedConnectionName", selectedConnectionName);
+
+                    int fileCount = 0;
+                    for (int i = 0; i < directory.length; i++) {
+                        if (directory[i].isFile()) { fileCount++; }
+                    }
+                    String[] fileList = new String[fileCount];
+                    int fileListIterator = 0;
+                    for (int i = 0; i < directory.length; i++) {
+                        if (directory[i].isFile()) {
+                            fileList[fileListIterator] = directory[i].getName();
+                            fileListIterator++;
+                        }
+                    }
+
+                    intent.putExtra("fileList", fileList);
                     startActivity(intent);
                 }else {
 
@@ -256,5 +276,29 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
             findViewById(R.id.file_entry_scroll).scrollTo(0, 0);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        String[] directories = selectedConnection.getDirectory().split("[/]");
+        if (directories.length >= 2) {
+            for (int i = 0; i < fragmentList.size(); i++) {
+                FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.remove(fragmentList.get(i)).commit();
+            }
+            String newPath = "";
+            for (int i = 0; i < (directories.length - 1); i++) {
+                newPath = newPath + "/" + directories[i];
+            }
+            Log.i("yeet", newPath);
+            selectedConnection.setDirectory(newPath);
+            display();
+        }
+    }
+
+    private String cleanUpPath (String path) {
+
+        return path;
     }
 }

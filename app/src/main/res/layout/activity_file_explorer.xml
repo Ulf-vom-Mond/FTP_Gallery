@@ -17,17 +17,21 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
+            android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/sort">
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="50px"
+            android:layout_height="50px"
+            app:srcCompat="@drawable/backarrow" />
 
         <Spinner
             android:layout_width="wrap_content"
@@ -58,10 +62,6 @@
 
             </LinearLayout>
         </ScrollView>
-
-
-
-
     </LinearLayout>
 
     <!--  <include layout="@layout/content_file_explorer" /> deaktivieren für scrollen-->
