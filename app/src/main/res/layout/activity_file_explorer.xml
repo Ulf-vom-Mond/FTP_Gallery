@@ -13,13 +13,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <ImageView
+                android:id="@+id/backArrow"
+                android:layout_width="50px"
+                android:layout_height="50px"
+                app:srcCompat="@drawable/backarrow" />
+        </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
             android:id="@+id/file_entry_scroll"
