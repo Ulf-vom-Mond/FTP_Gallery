@@ -125,7 +125,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        for (int i = 0; i < directory.length; i++) { //füllen von applets
+        for (int i = 0; i < directory.length; i++) { //füllen von fragment
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentList.add(new file_entry());
             Bundle testbundle = new Bundle();

@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -21,11 +22,31 @@
             app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/sort">
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sorting_way"/>
+
+        <Switch
+            android:id="@+id/richtung"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sorting_asc"
+            android:textOff="absteigend"
+            android:textOn="aufsteigend" />
+
+        </LinearLayout>
+
         <ScrollView
             android:id="@+id/file_entry_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <LinearLayout
                 android:id="@+id/file_entry_container"
@@ -35,6 +56,10 @@
 
             </LinearLayout>
         </ScrollView>
+
+
+
+
     </LinearLayout>
 
     <!--  <include layout="@layout/content_file_explorer" /> deaktivieren für scrollen-->
