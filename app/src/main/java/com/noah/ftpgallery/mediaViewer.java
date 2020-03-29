@@ -12,7 +12,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+
+import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +29,12 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class mediaViewer extends AppCompatActivity {
+public class mediaViewer extends AppCompatActivity implements View.OnClickListener {
+
+    Connection selectedConnection = null;
+    String[] fileList;
+    int currentFile;
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -104,20 +112,23 @@ public class mediaViewer extends AppCompatActivity {
         setContentView(R.layout.activity_media_viewer);
 
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
-        ImageView imageView = findViewById(R.id.imageView);
 
+        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        Button left = findViewById(R.id.left);
+        Button right = findViewById(R.id.right);
+        left.setOnClickListener(this);
+        right.setOnClickListener(this);
 
         // Set up the user interaction to manually show or hide the system UI.
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
         Intent intent = getIntent();
         String fileName = intent.getStringExtra("fileName");
         String selectedConnectionName = intent.getStringExtra("selectedConnectionName");
+        fileList = intent.getStringArrayExtra("fileList");
 
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
         try {
@@ -135,7 +146,7 @@ public class mediaViewer extends AppCompatActivity {
             return;
         }
 
-        Connection selectedConnection = null;
+        selectedConnection = null;
 
         for (int i = 0; i < connectionSettings.size(); i++) {
 
@@ -143,13 +154,16 @@ public class mediaViewer extends AppCompatActivity {
                 selectedConnection = connectionSettings.get(i);
             }
         }
-        Log.i("yeet", getCacheDir() + "/" + fileName);
 
-        if (!new File(getCacheDir() + "/" + fileName).exists()) {
-            selectedConnection.connect();
-            selectedConnection.downloadFile(fileName, getCacheDir() + "/" + fileName);
+        for (int i = 0; i < fileList.length; i++) {
+            if (fileList[i].equals(fileName)){
+                currentFile = i;
+            }
         }
-        imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileName));
+
+        selectedConnection.connect();
+        showMedia();
+
     }
 
     @Override
@@ -203,5 +217,55 @@ public class mediaViewer extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.left:
+                if (currentFile > 0) {
+                    currentFile--;
+                }
+                break;
+            case R.id.right:
+                if (currentFile < (fileList.length - 1)) {
+                    currentFile++;
+                }
+                break;
+        }
+        showMedia();
+    }
+
+    private void showMedia () {
+
+        ImageView imageView = findViewById(R.id.imageView);
+        if (!new File(getCacheDir() + "/" + fileList[currentFile]).exists()) {
+            selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
+        }
+        imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileList[currentFile]));
+        final Thread mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int autoDownload = 3;
+                for (int i = 0; i <= autoDownload * 2; i++) {
+                    String newFile;
+                    int index = (int) Math.ceil(i / 2);
+                    if ((currentFile - index) >= 0 && (currentFile + index) < (fileList.length)) {
+                        if (i % 2 == 0) {
+                            newFile = fileList[currentFile + index];
+                        }else {
+                            newFile = fileList[currentFile - index];
+                        }
+                        if (!new File(getCacheDir() + "/" + newFile).exists()) {
+                            Log.i("yeet", "downloading " + newFile);
+                            selectedConnection.downloadFile(newFile, getCacheDir() + "/" + newFile);
+                            Log.i("yeet", "downloaded " + newFile);
+                        }
+                    }
+                }
+            }
+        });
+        mThread.start();
+
     }
 }

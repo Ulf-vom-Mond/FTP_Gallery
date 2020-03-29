@@ -182,11 +182,11 @@ public class Connection implements Serializable {
 		final Thread mThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-			try (FileOutputStream fos = new FileOutputStream(localFilePath)) {
-				ftp.retrieveFile(directory + "/" + fileName, fos);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+				try (FileOutputStream fos = new FileOutputStream(localFilePath)) {
+					ftp.retrieveFile(directory + "/" + fileName, fos);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		mThread.start();

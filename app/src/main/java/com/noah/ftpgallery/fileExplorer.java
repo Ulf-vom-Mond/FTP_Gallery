@@ -106,6 +106,21 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                     Intent intent = new Intent(this, mediaViewer.class);
                     intent.putExtra("fileName", fileName);
                     intent.putExtra("selectedConnectionName", selectedConnectionName);
+
+                    int fileCount = 0;
+                    for (int i = 0; i < directory.length; i++) {
+                        if (directory[i].isFile()) { fileCount++; }
+                    }
+                    String[] fileList = new String[fileCount];
+                    int fileListIterator = 0;
+                    for (int i = 0; i < directory.length; i++) {
+                        if (directory[i].isFile()) {
+                            fileList[fileListIterator] = directory[i].getName();
+                            fileListIterator++;
+                        }
+                    }
+
+                    intent.putExtra("fileList", fileList);
                     startActivity(intent);
                 }else {
 

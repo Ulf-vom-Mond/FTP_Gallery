@@ -23,26 +23,6 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
-
-        </LinearLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -51,7 +31,7 @@
                 android:id="@+id/left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="<"
+                android:text="left"
                 android:background="#00000000"
                 tools:layout_editor_absoluteX="26dp"
                 tools:layout_editor_absoluteY="335dp"
@@ -63,7 +43,7 @@
                 android:id="@+id/right"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text=">"
+                android:text="right"
                 android:background="#00000000"
                 tools:layout_editor_absoluteX="287dp"
                 tools:layout_editor_absoluteY="351dp"
@@ -72,6 +52,16 @@
                 app:layout_constraintRight_toRightOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+        </LinearLayout>
 
     </FrameLayout>
 
