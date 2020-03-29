@@ -125,7 +125,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
         for (int i = 0; i < directory.length-1; i++){
             for (int b = 0; b < (directory.length)-i-1; b++){
-                if (true == vergleich(b, directory,sorting_way, sorting_way)){
+                if (true == vergleich(b, directory,sorting_way, sorting_direction)){
                     directory = change(b,directory);
                 }
             }
