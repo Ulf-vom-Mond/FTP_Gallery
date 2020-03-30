@@ -95,7 +95,7 @@ public class Connection implements Serializable {
 					Log.i ("yeet", "reply");
 
                     try {
-                        ftp.connect(ipAddress, port); //errrrororo //ToDO fixen
+                        ftp.connect(ipAddress, port);
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
