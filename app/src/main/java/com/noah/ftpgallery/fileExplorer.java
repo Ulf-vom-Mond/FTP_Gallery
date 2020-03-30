@@ -202,11 +202,12 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
 
     }
+
     private static String[] file_names (FTPFile[] directory){
         int length;
         String fileType = "";
 
-        String[] filenames = new String[]{"png","jpg"};
+        String[] filenames = {"png","jpg","jpeg","bmp"};
         List<String> list = Arrays.asList(filenames);
         ArrayList<Integer> places = new ArrayList<>();
 
@@ -240,22 +241,24 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         for (int i = 0; i < directory.length; i++) { //füllen von fragment
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentList.add(new file_entry());
-            Bundle testbundle = new Bundle();
-            ArrayList<String> attributes = new ArrayList<String>();
-            attributes.add(directory[i].getName());
-            attributes.add(formatSize(directory[i].getSize()));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm ");
-            attributes.add(sdf.format(directory[i].getTimestamp().getTime()));
-            attributes.add(directory[i].isDirectory() ? "directory" : "file");
-            testbundle.putStringArrayList("file_attribute" , attributes);
+            if (!(directory[i].getName().equals(".") || directory[i].getName().equals(".."))) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentList.add(new file_entry());
+                Bundle testbundle = new Bundle();
+                ArrayList<String> attributes = new ArrayList<>();
+                attributes.add(directory[i].getName());
+                attributes.add(formatSize(directory[i].getSize()));
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm ");
+                attributes.add(sdf.format(directory[i].getTimestamp().getTime()));
+                attributes.add(directory[i].isDirectory() ? "directory" : "file");
+                testbundle.putStringArrayList("file_attribute", attributes);
 
-            fragmentList.get(fragmentList.size() - 1).setArguments(testbundle);
-            fragmentTransaction.add(R.id.file_entry_container, fragmentList.get(fragmentList.size() - 1));
-            fragmentTransaction.commit();
+                fragmentList.get(fragmentList.size() - 1).setArguments(testbundle);
+                fragmentTransaction.add(R.id.file_entry_container, fragmentList.get(fragmentList.size() - 1));
+                fragmentTransaction.commit();
 
-            findViewById(R.id.file_entry_scroll).scrollTo(0, 0);
+                findViewById(R.id.file_entry_scroll).scrollTo(0, 0);
+            }
         }
     }
 
@@ -284,11 +287,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                 display();
                 break;
         }
-    }
-
-    private String cleanUpPath (String path) {
-
-        return path;
     }
 
     @Override

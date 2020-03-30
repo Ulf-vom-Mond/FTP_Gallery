@@ -1,5 +1,6 @@
 package com.noah.ftpgallery;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.io.FileInputStream;
@@ -82,12 +85,50 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+    	breakpoint:
 		switch(v.getId()){
 			case R.id.saveSettings:
                 Log.i("yeet", "" + username.getText());
 				ArrayList<Connection> connectionSettings = readConnectionSettings();
+				String connectionName = this.connectionName.getText().toString();
+				String ipAddress = this.ipAddress.getText().toString();
+				String port = this.port.getText().toString();
+				String username = this.username.getText().toString();
+				String password = this.password.getText().toString();
+				String standardDirectory = this.standardDirectory.getText().toString();
+
+				String tag = "";
+				if (connectionName == null || connectionName.length() == 0) {
+					//tag = tag + "connectionName ";
+					connectionName = "new connection";
+				}
+				if (ipAddress == null || ipAddress.length() == 0) {
+					tag = tag + "ipAddress ";
+				}
+				if (port == null || port.length() == 0) {
+					//tag = tag + "port ";
+					port = "21";
+				}
+				if (username == null || username.length() == 0) {
+					tag = tag + "username ";
+				}
+				if (password == null || password.length() == 0) {
+					//tag = tag + "password ";
+					password = "";
+				}
+				if (standardDirectory == null || standardDirectory.length() == 0) {
+					//tag = tag + "standardDirectory";
+					standardDirectory = "/";
+				}
+
+				if (tag.length() != 0) {
+					EmptyServerSettingDialog emptyServerSettingsDialog = new EmptyServerSettingDialog();
+					emptyServerSettingsDialog.show(getFragmentManager(), tag);
+					break breakpoint;
+				}
+
                 if(mCallback.getSelectedServer().equals("Add server")){
-                	connectionSettings.add(new Connection(connectionName.getText().toString(), ipAddress.getText().toString(), Integer.parseInt(port.getText().toString()), username.getText().toString(), password.getText().toString(), standardDirectory.getText().toString()));
+                	connectionSettings.add(new Connection(connectionName, ipAddress, Integer.parseInt(port), username, password, standardDirectory));
 					mCallback.getMainDrawerMenu().add(R.id.addServerGroup, connectionSettings.size(), 0, connectionSettings.get(connectionSettings.size() - 1).getConnectionName());
 					//mCallback.getMainDrawerMenu().getItem(connectionSettings.size() - 1).setIcon(R.drawable.ic_single_server);
 				}else {
@@ -96,7 +137,7 @@ public class serverSettings extends Fragment implements View.OnClickListener {
                 	for (i = 0; i < connectionSettings.size(); i++){
                 		if (connectionSettings.get(i).getConnectionName().equals(mCallback.getSelectedServer())) {break exit;}
 					}
-                	connectionSettings.set(i, new Connection(connectionName.getText().toString(), ipAddress.getText().toString(), Integer.parseInt(port.getText().toString()), username.getText().toString(), password.getText().toString(), standardDirectory.getText().toString()));
+                	connectionSettings.set(i, new Connection(connectionName, ipAddress, Integer.parseInt(port), username, password, standardDirectory));
                 	mCallback.getMainDrawerMenu().getItem(i + 1).setTitle(connectionSettings.get(i).getConnectionName());
 				}
 				try {
