@@ -16,11 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -31,12 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Collection;
-import java.util.Collections;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
-public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener, View.OnClickListener {
+public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     FTPFile[] directory;
@@ -54,6 +49,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         selectedConnectionName = intent.getStringExtra(EXTRA_MESSAGE);
 
         findViewById(R.id.backArrow).setOnClickListener(this);
+        findViewById(R.id.order).setOnClickListener(this);
 
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
         try {
@@ -82,8 +78,8 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         selectedConnection.connect();
 
 
-        Spinner spinner = (Spinner) findViewById(R.id.sorting_way); //array mit werten auswählen
-        Switch sorting_direction_switch = (Switch)findViewById(R.id.richtung);
+        Spinner spinner = (Spinner) findViewById(R.id.criteria); //array mit werten auswählen
+        spinner.setOnItemSelectedListener(this);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sorting_criteria, android.R.layout.simple_spinner_item);
             // Specify the layout to use when the list of choices appears
@@ -112,8 +108,8 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     }
 
     private  FTPFile[] sorting (FTPFile[] directory){
-        Spinner spinner = (Spinner) findViewById(R.id.sorting_way); //array mit werten auswählen
-        Switch sorting_direction_switch = (Switch)findViewById(R.id.richtung);
+        Spinner spinner = (Spinner) findViewById(R.id.criteria); //array mit werten auswählen
+        Switch sorting_direction_switch = (Switch)findViewById(R.id.order);
 
         String sorting_way = spinner.getSelectedItem().toString();  //werte ablesen
         String sorting_direction;
@@ -149,14 +145,14 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
         //sorting_way = "name";
         switch (sorting_way){       //je nach art sortieren
-            case "Size":
-                if (directory[b+1].getSize() > directory[b].getSize()){
+            case "size":
+                if (directory[b+1].getSize() < directory[b].getSize()){
                 test = true;
                     first = directory[b].getSize() + "";
                     second = directory[b+1].getSize() + "";
                 }
                 break;
-            case "Date":
+            case "date":
                 first = sdf.format(directory[b].getTimestamp().getTime()) + "";
                 second = sdf.format(directory[b+1].getTimestamp().getTime()) + "";
                 if (first.compareToIgnoreCase(second) >= 0){  //wenn second größer ist, dann positive zahl
@@ -172,9 +168,9 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
 
                 if (sorting_direction == "desc"){   //bei absteigender sortierung alles umkehren
-                    return test;
-                }else{
                     return !test;
+                }else{
+                    return test;
                 }
     }
 
@@ -185,11 +181,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             iterator++;
         }
         if (!directory[iterator].isFile()) {
-            for (int i = 0; i < fragmentList.size(); i++) {
-                FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.remove(fragmentList.get(i)).commit();
-            }
             selectedConnection.setDirectory(selectedConnection.getDirectory() + "/" + fileName);
             display();
         }else {
@@ -200,21 +191,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                     Intent intent = new Intent(this, mediaViewer.class);
                     intent.putExtra("fileName", fileName);
                     intent.putExtra("selectedConnectionName", selectedConnectionName);
-
-                    int fileCount = 0;
-                    for (int i = 0; i < directory.length; i++) {
-                        if (directory[i].isFile()) { fileCount++; }
-                    }
-                    String[] fileList = new String[fileCount];
-                    int fileListIterator = 0;
-                    for (int i = 0; i < directory.length; i++) {
-                        if (directory[i].isFile()) {
-                            fileList[fileListIterator] = directory[i].getName();
-                            fileListIterator++;
-                        }
-                    }
-
-                    intent.putExtra("fileList", fileList);
+                    intent.putExtra("fileList", file_names(directory));
                     startActivity(intent);
                 }else {
 
@@ -250,7 +227,11 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     }
 
     private void display() {
-
+        for (int i = 0; i < fragmentList.size(); i++) {
+            FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragmentList.get(i)).commit();
+        }
         fragmentList.clear();
         selectedConnection.setListHiddenFiles(true);
         directory = sorting(selectedConnection.listDirectory());
@@ -280,25 +261,44 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
     @Override
     public void onClick(View v) {
-        String[] directories = selectedConnection.getDirectory().split("[/]");
-        if (directories.length >= 2) {
-            for (int i = 0; i < fragmentList.size(); i++) {
-                FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.remove(fragmentList.get(i)).commit();
-            }
-            String newPath = "";
-            for (int i = 0; i < (directories.length - 1); i++) {
-                newPath = newPath + "/" + directories[i];
-            }
-            Log.i("yeet", newPath);
-            selectedConnection.setDirectory(newPath);
-            display();
+        switch (v.getId()) {
+            case R.id.backArrow:
+                String[] directories = selectedConnection.getDirectory().split("[/]");
+                if (directories.length >= 1) {
+                    for (int i = 0; i < fragmentList.size(); i++) {
+                       FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                       fragmentTransaction.remove(fragmentList.get(i)).commit();
+                   }
+                    String newPath = "/";
+                    for (int i = 1; i < (directories.length - 1); i++) {
+                        newPath = newPath + directories[i] + "/";
+                   }
+                   selectedConnection.setDirectory(newPath);
+                   display();
+                }
+                break;
+            case R.id.order:
+                Switch order = findViewById(R.id.order);
+                order.setText(order.getText().equals("ascending ") ? "descending " : "ascending ");
+                display();
+                break;
         }
     }
 
     private String cleanUpPath (String path) {
 
         return path;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.i("yeet", "on item selected");
+        display();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

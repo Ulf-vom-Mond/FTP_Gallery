@@ -22,31 +22,43 @@
             app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/sort">
-        <ImageView
-            android:id="@+id/backArrow"
-            android:layout_width="50px"
-            android:layout_height="50px"
-            app:srcCompat="@drawable/backarrow" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sorting_way"/>
+                <ImageView
+                    android:id="@+id/backArrow"
+                    android:layout_width="50px"
+                    android:layout_height="50px"
+                    app:srcCompat="@drawable/backarrow"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <Switch
-            android:id="@+id/richtung"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sortierrichtung"
-            android:textOff="absteigend"
-            android:textOn="aufsteigend" />
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/criteria"
+                    android:layout_margin="1mm"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
 
-        </LinearLayout>
+                <Switch
+                    android:id="@+id/order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ascending "
+                    android:textOff="absteigend"
+                    android:textOn="aufsteigend"
+                    android:layout_margin="1mm"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
@@ -63,6 +75,8 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
+
+
 
     <!--  <include layout="@layout/content_file_explorer" /> deaktivieren für scrollen-->
 
