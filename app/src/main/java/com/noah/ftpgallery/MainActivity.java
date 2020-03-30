@@ -93,6 +93,12 @@ public class MainActivity extends AppCompatActivity implements serverSettings.Co
 		if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_DENIED) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 0);
 		}
+		if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+		}
+		if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+		}
 		File configFile = new File(getFilesDir() + "/connectionSettings.ser");
 		if(!configFile.exists()){
 			ArrayList<Connection> connectionSettings = new ArrayList<Connection>();

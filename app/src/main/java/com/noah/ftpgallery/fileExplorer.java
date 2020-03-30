@@ -1,16 +1,25 @@
 package com.noah.ftpgallery;
 
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 //import android.support.v7.app.AppCompatActivity;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,8 +28,12 @@ import android.widget.Switch;
 
 import android.util.Log;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -187,20 +200,72 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             int length = directory[iterator].getName().split("[.]").length;
             if (length >= 1) {
                 String fileType = directory[iterator].getName().split("[.]")[length - 1].toLowerCase();
-                if (fileType.equals("png") || fileType.equals("jpg") || fileType.equals("jpeg") || fileType.equals("bmp")) {
-                    Intent intent = new Intent(this, mediaViewer.class);
-                    intent.putExtra("fileName", fileName);
-                    intent.putExtra("selectedConnectionName", selectedConnectionName);
-                    intent.putExtra("fileList", file_names(directory));
-                    startActivity(intent);
-                }else {
-
+                switch (fileType) {
+                    case "png":
+                    case "jpg":
+                    case "jpeg":
+                    case "bmp":
+                    case "gif":
+                    case "webm":
+                    case "mp4":
+                    case "mkv":
+                        Intent intent = new Intent(this, mediaViewer.class);
+                        intent.putExtra("fileName", fileName);
+                        intent.putExtra("selectedConnectionName", selectedConnectionName);
+                        intent.putExtra("fileList", file_names(directory));
+                        intent.putExtra("fileType", fileType);
+                        startActivity(intent);
+                        break;
+                    default:
+                        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                        }
+                        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                        }
+                        selectedConnection.downloadFile(fileName, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName);
+                        Snackbar.make(findViewById(R.id.file_explorer), "Downloaded to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName, Snackbar.LENGTH_LONG).show();
+                        break;
                 }
             }else {
 
             }
         }
 
+    }
+
+    @Override
+    public void entryOnLongClickListener(String fileName) {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        }
+        File picturesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/");
+        if (!picturesDir.exists()) {
+            picturesDir.mkdirs();
+        }
+        selectedConnection.downloadFile(fileName, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/" + fileName);
+        Snackbar.make(findViewById(R.id.file_explorer), "Downloaded to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/" + fileName, Snackbar.LENGTH_LONG).show();
+      /*  int length = fileName.split("[.]").length;
+        if (length >= 1) {
+            String fileType = fileName.split("[.]")[length - 1].toLowerCase();
+            switch (fileType) {
+                case "png":
+                case "jpg":
+                case "jpeg":
+                case "bmp":
+                case "gif":
+
+                    break;
+                case "webm":
+                case "mp4":
+                case "mkv":
+
+                    break;
+            }
+        }*/
     }
 
     private static String[] file_names (FTPFile[] directory){

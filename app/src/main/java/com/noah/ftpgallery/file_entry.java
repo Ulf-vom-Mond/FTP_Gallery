@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * Use the {@link file_entry#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class file_entry extends Fragment implements View.OnClickListener {
+public class file_entry extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private View view;
@@ -93,6 +93,7 @@ public class file_entry extends Fragment implements View.OnClickListener {
 		LinearLayout entry = getView().findViewById(R.id.entry);
 
 		entry.setOnClickListener(this);
+		entry.setOnLongClickListener(this);
 		ImageView icon = getView().findViewById(R.id.icon);
 		file_name.setText(attributes.get(0));
 		file_size.setText(attributes.get(1));
@@ -161,7 +162,14 @@ public class file_entry extends Fragment implements View.OnClickListener {
         mCallback.entryOnClickListener(getArguments().getStringArrayList("file_attribute").get(0));
     }
 
-    public interface EntryOnClickListener {
+	@Override
+	public boolean onLongClick(View v) {
+		mCallback.entryOnLongClickListener(getArguments().getStringArrayList("file_attribute").get(0));
+		return true;
+	}
+
+	public interface EntryOnClickListener {
         public void entryOnClickListener (String fileName);
+		public void entryOnLongClickListener (String fileName);
     }
 }

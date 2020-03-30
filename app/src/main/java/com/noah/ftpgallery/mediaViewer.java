@@ -1,19 +1,26 @@
 package com.noah.ftpgallery;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -29,7 +36,7 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class mediaViewer extends AppCompatActivity implements View.OnClickListener {
+public class mediaViewer extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     Connection selectedConnection = null;
     String[] fileList;
@@ -118,6 +125,7 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         Button right = findViewById(R.id.right);
         left.setOnClickListener(this);
         right.setOnClickListener(this);
+        findViewById(R.id.media_viewer).setOnLongClickListener(this);
 
         // Set up the user interaction to manually show or hide the system UI.
 
@@ -267,5 +275,22 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         });
         mThread.start();
 
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        }
+        File picturesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/");
+        if (!picturesDir.exists()) {
+            picturesDir.mkdirs();
+        }
+        selectedConnection.downloadFile(fileList[currentFile], Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/" + fileList[currentFile]);
+        Snackbar.make(findViewById(R.id.media_viewer), "Downloaded to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/" + fileList[currentFile], Snackbar.LENGTH_LONG).show();
+        return true;
     }
 }
