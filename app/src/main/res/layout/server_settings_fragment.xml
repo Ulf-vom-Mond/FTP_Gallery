@@ -131,7 +131,7 @@
 				android:id="@+id/saveSettings"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Save Settings" />
+				android:text="Save settings" />
 
 		</TableRow>
 
@@ -143,10 +143,10 @@
 				android:layout_height="wrap_content" />
 
 			<Button
-				android:id="@+id/showLogs"
+				android:id="@+id/deleteConnection"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Show server log" />
+				android:text="Delete connection" />
 
 		</TableRow>
 

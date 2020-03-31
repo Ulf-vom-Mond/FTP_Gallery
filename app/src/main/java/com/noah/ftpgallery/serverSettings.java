@@ -45,10 +45,9 @@ public class serverSettings extends Fragment implements View.OnClickListener {
     @Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.server_settings_fragment, container, false);
-		Log.i("yeet", "bist du jetzt wirklich dran?");
 		Button saveSettings = (Button) view.findViewById(R.id.saveSettings);
 		saveSettings.setOnClickListener(this);
-		Button showLogs = (Button) view.findViewById(R.id.showLogs);
+		Button showLogs = (Button) view.findViewById(R.id.deleteConnection);
 		showLogs.setOnClickListener(this);
         connectionName = (EditText) view.findViewById(R.id.edit_name);
         ipAddress = (EditText) view.findViewById(R.id.edit_ip);
@@ -57,7 +56,6 @@ public class serverSettings extends Fragment implements View.OnClickListener {
         password = (EditText) view.findViewById(R.id.edit_password);
         standardDirectory = (EditText) view.findViewById(R.id.edit_directory);
 		String selectedServer = mCallback.getSelectedServer();
-		Log.i("yeet", "youuu sülüctäd le serve du " + selectedServer);
 		ArrayList<Connection> connectionSettings = readConnectionSettings();
 		if(!mCallback.getSelectedServer().equals("Add server")){  //
 			int i;
@@ -85,11 +83,10 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		ArrayList<Connection> connectionSettings = readConnectionSettings();
     	breakpoint:
 		switch(v.getId()){
 			case R.id.saveSettings:
-                Log.i("yeet", "" + username.getText());
-				ArrayList<Connection> connectionSettings = readConnectionSettings();
 				String connectionName = this.connectionName.getText().toString();
 				String ipAddress = this.ipAddress.getText().toString();
 				String port = this.port.getText().toString();
@@ -100,17 +97,17 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 				String tag = "";
 				if (connectionName == null || connectionName.length() == 0) {
 					//tag = tag + "connectionName ";
-					connectionName = "new connection";
+					connectionName = "connection " + connectionSettings.size();
 				}
 				if (ipAddress == null || ipAddress.length() == 0) {
-					tag = tag + "ipAddress ";
+					tag = tag + "ipaddress";
 				}
 				if (port == null || port.length() == 0) {
 					//tag = tag + "port ";
 					port = "21";
 				}
 				if (username == null || username.length() == 0) {
-					tag = tag + "username ";
+					tag = tag + "username";
 				}
 				if (password == null || password.length() == 0) {
 					//tag = tag + "password ";
@@ -121,10 +118,17 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 					standardDirectory = "/";
 				}
 
+				end:
+				for (int i = 0; i < connectionSettings.size(); i++) {
+					if (connectionSettings.get(i).getConnectionName().equals(connectionName)) {
+						tag = tag + "samename";
+					}
+				}
+
 				if (tag.length() != 0) {
 					EmptyServerSettingDialog emptyServerSettingsDialog = new EmptyServerSettingDialog();
 					emptyServerSettingsDialog.show(getFragmentManager(), tag);
-					break breakpoint;
+					return;
 				}
 
                 if(mCallback.getSelectedServer().equals("Add server")){
@@ -140,23 +144,19 @@ public class serverSettings extends Fragment implements View.OnClickListener {
                 	connectionSettings.set(i, new Connection(connectionName, ipAddress, Integer.parseInt(port), username, password, standardDirectory));
                 	mCallback.getMainDrawerMenu().getItem(i + 1).setTitle(connectionSettings.get(i).getConnectionName());
 				}
-				try {
-					FileOutputStream fileOut = new FileOutputStream(getContext().getFilesDir() + "/connectionSettings.ser");
-					ObjectOutputStream out = new ObjectOutputStream(fileOut);
-					out.writeObject(connectionSettings);
-					out.close();
-					fileOut.close();
-					Log.i("yeet", "created and serialized empty arrayList");
-				} catch (IOException i) {
-					i.printStackTrace();
-				}
-				Intent intent = new Intent(getContext(), MainActivity.class);
-				startActivity(intent);
 				break;
-			case R.id.showLogs:
-				Log.i("yeet", "show logs");
+			case R.id.deleteConnection:
+				int i;
+				exit:
+				for (i = 0; i < connectionSettings.size(); i++){
+					if (connectionSettings.get(i).getConnectionName().equals(mCallback.getSelectedServer())) {break exit;}
+				}
+				connectionSettings.remove(i);
 				break;
 		}
+		writeConnectionSettings(connectionSettings);
+		Intent intent = new Intent(getContext(), MainActivity.class);
+		startActivity(intent);
 	}
 
 	public interface Communication {
@@ -197,5 +197,17 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 			return null;
 		}
 		return connectionSettings;
+	}
+
+	private void writeConnectionSettings(ArrayList<Connection> connectionSettings) {
+		try {
+			FileOutputStream fileOut = new FileOutputStream(getContext().getFilesDir() + "/connectionSettings.ser");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(connectionSettings);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		}
 	}
 }

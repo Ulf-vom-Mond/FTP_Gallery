@@ -14,14 +14,21 @@ public class EmptyServerSettingDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         String tag = getTag();
         String message = "Please enter ";
-        if (tag.contains("ipAddress")) {
+        if (tag.contains("ipaddress")) {
             message = message + "an IP address or an URL";
         }
         if (tag.contains("username")) {
-            if (message.length() > 20) {
+            if (tag.contains("ipAddress")) {
                 message = message + " and a username";
             }else {
                 message = message + "a username";
+            }
+        }
+        if (tag.contains("samename")) {
+            if (tag.contains("ipaddress") || tag.contains("username")) {
+                message = message + "\nAlso, please use a name that doesn't already exist";
+            }else {
+                message = "Please use a name that doesn't already exist";
             }
         }
         builder.setMessage(message)

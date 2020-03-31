@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements serverSettings.Co
 				i.printStackTrace();
 			}
 		}
-		ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
+		ArrayList<Connection> connectionSettings = new ArrayList<>();
 		try {
 			FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
