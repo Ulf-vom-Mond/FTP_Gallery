@@ -118,10 +118,12 @@ public class serverSettings extends Fragment implements View.OnClickListener {
 					standardDirectory = "/";
 				}
 
-				end:
-				for (int i = 0; i < connectionSettings.size(); i++) {
-					if (connectionSettings.get(i).getConnectionName().equals(connectionName)) {
-						tag = tag + "samename";
+				if (mCallback.getSelectedServer().equals("Add server")) {
+					end:
+					for (int i = 0; i < connectionSettings.size(); i++) {
+						if (connectionSettings.get(i).getConnectionName().equals(connectionName)) {
+							tag = tag + "samename";
+						}
 					}
 				}
 

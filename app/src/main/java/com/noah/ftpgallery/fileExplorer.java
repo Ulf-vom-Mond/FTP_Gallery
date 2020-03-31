@@ -64,7 +64,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         findViewById(R.id.backArrow).setOnClickListener(this);
         findViewById(R.id.order).setOnClickListener(this);
 
-        ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
+        ArrayList<Connection> connectionSettings = new ArrayList<>();
         try {
             FileInputStream fileIn = new FileInputStream(getFilesDir() + "/connectionSettings.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -195,6 +195,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
         if (!directory[iterator].isFile()) {
             selectedConnection.setDirectory(selectedConnection.getDirectory() + "/" + fileName);
+            Log.i("yeet", selectedConnection.getDirectory());
             display();
         }else {
             int length = directory[iterator].getName().split("[.]").length;
@@ -214,6 +215,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                         intent.putExtra("selectedConnectionName", selectedConnectionName);
                         intent.putExtra("fileList", file_names(directory));
                         intent.putExtra("fileType", fileType);
+                        intent.putExtra("path", selectedConnection.getDirectory());
                         startActivity(intent);
                         break;
                     default:
@@ -331,7 +333,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.backArrow:
-                String[] directories = selectedConnection.getDirectory().split("[/]");
+                String[] directories = selectedConnection.getDirectory().split("/");
                 if (directories.length >= 1) {
                     for (int i = 0; i < fragmentList.size(); i++) {
                        FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();

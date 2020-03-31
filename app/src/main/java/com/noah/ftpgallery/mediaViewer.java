@@ -163,6 +163,8 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
             }
         }
 
+        selectedConnection.setDirectory(intent.getStringExtra("path"));
+
         for (int i = 0; i < fileList.length; i++) {
             if (fileList[i].equals(fileName)){
                 currentFile = i;

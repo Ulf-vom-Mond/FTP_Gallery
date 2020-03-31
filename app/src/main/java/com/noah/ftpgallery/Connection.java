@@ -5,6 +5,7 @@ import android.util.Log;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
@@ -113,6 +114,7 @@ public class Connection implements Serializable {
 					ftp.login(username, password);
 					ftp.setFileType(FTP.BINARY_FILE_TYPE);
 					ftp.enterLocalPassiveMode();
+					Log.i("yeet", ftp.getSystemType());
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (Exception e) {
@@ -184,6 +186,7 @@ public class Connection implements Serializable {
 			public void run() {
 				try (FileOutputStream fos = new FileOutputStream(localFilePath)) {
 					ftp.retrieveFile(directory + "/" + fileName, fos);
+					Log.i("yeet", directory + "/" + fileName);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
