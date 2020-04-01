@@ -22,6 +22,7 @@ public class Connection implements Serializable {
 	private String password;
 	private String directory;
 	private FTPClient ftp = null;
+	private FTPFile[] directoryListing;
 
 	public Connection(String connectionName, String ipAddress, int port, String username, String password, String directory){
 		this.connectionName = connectionName;
@@ -29,7 +30,7 @@ public class Connection implements Serializable {
 		this.port = port;
 		this.username = username;
 		this.password = password;
-		this.directory = directory;
+		this.directory = cleanUpPath(directory);
 	}
 
 	public Connection(){
@@ -52,8 +53,28 @@ public class Connection implements Serializable {
 		this.port = port;
 	}
 
-	public void setDirectory(String directory) {
-		this.directory = directory;
+	public void setDirectory(final String directory) {
+		this.directory = cleanUpPath(directory);
+		if (ftp != null) {
+			final Thread mThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						directoryListing = ftp.listFiles(directory);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			mThread.start();
+			try {
+				mThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void setUsername(String username) {
@@ -114,7 +135,7 @@ public class Connection implements Serializable {
 					ftp.login(username, password);
 					ftp.setFileType(FTP.BINARY_FILE_TYPE);
 					ftp.enterLocalPassiveMode();
-					Log.i("yeet", ftp.getSystemType());
+					directoryListing = ftp.listFiles(directory);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (Exception e) {
@@ -154,26 +175,7 @@ public class Connection implements Serializable {
 	}
 
 	public FTPFile[] listDirectory() {
-		final FTPFile[][] directoryListing = new FTPFile[1][];
-		final Thread mThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					directoryListing[0] = ftp.listFiles(directory);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		mThread.start();
-		try {
-			mThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return directoryListing[0];
+		return this.directoryListing;
 	}
 
 	public void setListHiddenFiles(Boolean setting) {
@@ -198,5 +200,28 @@ public class Connection implements Serializable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public long getFileSize(final String fileName) {
+	    long size = 0;
+	    Log.i("yeet", this.directoryListing.length + ", " + this.directory + ", " + fileName);
+        for (int i = 0; i < this.directoryListing.length; i++) {
+        	Log.i("yeet", this.directoryListing[i].getName() + ", " + fileName);
+        	if (this.directoryListing[i].getName().equals(fileName)) {
+            	size = this.directoryListing[i].getSize();
+            }
+        }
+        return size;
+    }
+
+    private String cleanUpPath (String path) {
+		String splitted[] = path.split("/");
+		path = "/";
+		for (int i = 0; i < splitted.length; i++) {
+			if (splitted[i].length() != 0) {
+				path = path + "/" + splitted[i];
+			}
+		}
+		return path;
 	}
 }

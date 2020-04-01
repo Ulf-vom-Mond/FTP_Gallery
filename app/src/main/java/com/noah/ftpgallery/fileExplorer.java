@@ -216,6 +216,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                         intent.putExtra("fileList", file_names(directory));
                         intent.putExtra("fileType", fileType);
                         intent.putExtra("path", selectedConnection.getDirectory());
+                        selectedConnection.disconnect();
                         startActivity(intent);
                         break;
                     default:
@@ -295,6 +296,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     }
 
     private void display() {
+        Log.i("yeet", selectedConnection.getDirectory());
         for (int i = 0; i < fragmentList.size(); i++) {
             FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -365,5 +367,11 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        selectedConnection.disconnect();
     }
 }

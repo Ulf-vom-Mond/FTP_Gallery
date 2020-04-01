@@ -247,11 +247,24 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
     }
 
     private void showMedia () {
-
         ImageView imageView = findViewById(R.id.imageView);
+        Log.i("yeet", "show media" + fileList[currentFile]);
         if (!new File(getCacheDir() + "/" + fileList[currentFile]).exists()) {
+            Log.i("yeet", "download 1");
             selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
+        }else {
+            Log.i("yeet", selectedConnection.getFileSize(fileList[currentFile]) + "");
+            if (selectedConnection.getFileSize(fileList[currentFile]) != new File(getCacheDir() + "/" + fileList[currentFile]).length()) {
+                selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
+                Log.i("yeet", "download 2");
+            }
         }
+        /*long localSize = 0;
+        long serverSize = selectedConnection.getFileSize(fileList[currentFile]);
+        while (localSize < serverSize) {
+            localSize = new File(getCacheDir() + "/" + fileList[currentFile]).length();
+            Log.i("yeet", localSize + "/" + serverSize);
+        }*/
         imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileList[currentFile]));
         final Thread mThread = new Thread(new Runnable() {
             @Override
@@ -270,13 +283,16 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
                             Log.i("yeet", "downloading " + newFile);
                             selectedConnection.downloadFile(newFile, getCacheDir() + "/" + newFile);
                             Log.i("yeet", "downloaded " + newFile);
+                        }else {
+                            if (selectedConnection.getFileSize(newFile) != new File(getCacheDir() + "/" + newFile).length()) {
+                                selectedConnection.downloadFile(newFile, getCacheDir() + "/" + newFile);
+                            }
                         }
                     }
                 }
             }
         });
         mThread.start();
-
     }
 
     @Override
@@ -294,5 +310,11 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         selectedConnection.downloadFile(fileList[currentFile], Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/" + fileList[currentFile]);
         Snackbar.make(findViewById(R.id.media_viewer), "Downloaded to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/FTP gallery/" + fileList[currentFile], Snackbar.LENGTH_LONG).show();
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        selectedConnection.disconnect();
     }
 }
