@@ -273,7 +273,6 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
     }
 
     private void showMedia () {
-        Log.i("yeet", "1");
         if (!new File(getCacheDir() + "/" + fileList[currentFile]).exists()) {
             selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
         }else {
@@ -281,7 +280,6 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
                 selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
             }
         }
-        Log.i("yeet", "2");
         /*long localSize = 0;
         long serverSize = selectedConnection.getFileSize(fileList[currentFile]);
         while (localSize < serverSize) {
@@ -295,16 +293,15 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
                 case "jpg":
                 case "jpeg":
                 case "bmp":
-                    Log.i("yeet", "3a");
                     video = false;
                     imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileList[currentFile]));
                     imageView.setBackgroundColor(0xff000000);
-                    Log.i("yeet", "4a");
                     break;
                 case "gif":
                 case "webm":
                 case "mp4":
-                    Log.i("yeet", "3b");
+                case "avi":
+                case "mkv":
                     video = true;
                     imageView.setBackgroundColor(0x00000000);
                     runOnUiThread(new Runnable() {
@@ -312,11 +309,6 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
                             playVideo();
                         }
                     });
-                    Log.i("yeet", "4b");
-                    break;
-                case "avi":
-                case "mkv":
-                    video = true;
                     break;
             }
         }
