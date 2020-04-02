@@ -73,7 +73,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             fileIn.close();
         } catch (IOException i) {
             i.printStackTrace();
-            Log.i ("yeet", "catch");
             return;
         } catch (ClassNotFoundException c) {
             c.printStackTrace();
@@ -100,6 +99,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         spinner.setAdapter(adapter);
 
         display();
+
     }
 
     private static String formatSize (long size) {
@@ -195,7 +195,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
         if (!directory[iterator].isFile()) {
             selectedConnection.setDirectory(selectedConnection.getDirectory() + "/" + fileName);
-            Log.i("yeet", selectedConnection.getDirectory());
             display();
         }else {
             int length = directory[iterator].getName().split("[.]").length;
@@ -210,6 +209,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                     case "webm":
                     case "mp4":
                     case "mkv":
+                    case "avi":
                         Intent intent = new Intent(this, mediaViewer.class);
                         intent.putExtra("fileName", fileName);
                         intent.putExtra("selectedConnectionName", selectedConnectionName);
@@ -234,7 +234,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
             }
         }
-
+        //findViewById(R.id.loadingPanel).setVisibility(View.GONE);
     }
 
     @Override
@@ -275,7 +275,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         int length;
         String fileType = "";
 
-        String[] filenames = {"png","jpg","jpeg","bmp"};
+        String[] filenames = {"png","jpg","jpeg","bmp","gif","mp4","webm","avi","mkv"};
         List<String> list = Arrays.asList(filenames);
         ArrayList<Integer> places = new ArrayList<>();
 
@@ -296,7 +296,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     }
 
     private void display() {
-        Log.i("yeet", selectedConnection.getDirectory());
         for (int i = 0; i < fragmentList.size(); i++) {
             FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -339,7 +338,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                 if (directories.length >= 1) {
                     for (int i = 0; i < fragmentList.size(); i++) {
                        FragmentManager fragmentManager = fragmentList.get(i).getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                       FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                        fragmentTransaction.remove(fragmentList.get(i)).commit();
                    }
                     String newPath = "/";
@@ -360,7 +359,6 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.i("yeet", "on item selected");
         display();
     }
 

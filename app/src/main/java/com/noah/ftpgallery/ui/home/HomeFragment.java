@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.i("yeet", ((Button) v).getText().toString());
         Intent intent = new Intent(getContext(), fileExplorer.class);
         intent.putExtra(EXTRA_MESSAGE, ((Button) v).getText().toString());
         startActivity(intent);

@@ -114,7 +114,6 @@ public class Connection implements Serializable {
 					ftp = new FTPClient();
 					ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
 					int reply;
-					Log.i ("yeet", "reply");
 
                     try {
                         ftp.connect(ipAddress, port);
@@ -122,10 +121,7 @@ public class Connection implements Serializable {
                         e.printStackTrace();
                     }
 
-
-
-                    Log.i ("yeet", "ftpconnect");
-					reply = ftp.getReplyCode();
+                    reply = ftp.getReplyCode();
 
 					if (!FTPReply.isPositiveCompletion(reply)) {
 						ftp.disconnect();
@@ -188,7 +184,6 @@ public class Connection implements Serializable {
 			public void run() {
 				try (FileOutputStream fos = new FileOutputStream(localFilePath)) {
 					ftp.retrieveFile(directory + "/" + fileName, fos);
-					Log.i("yeet", directory + "/" + fileName);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -204,9 +199,7 @@ public class Connection implements Serializable {
 
 	public long getFileSize(final String fileName) {
 	    long size = 0;
-	    Log.i("yeet", this.directoryListing.length + ", " + this.directory + ", " + fileName);
         for (int i = 0; i < this.directoryListing.length; i++) {
-        	Log.i("yeet", this.directoryListing[i].getName() + ", " + fileName);
         	if (this.directoryListing[i].getName().equals(fileName)) {
             	size = this.directoryListing[i].getSize();
             }

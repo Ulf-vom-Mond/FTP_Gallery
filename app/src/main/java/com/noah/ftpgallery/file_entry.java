@@ -133,6 +133,9 @@ public class file_entry extends Fragment implements View.OnClickListener, View.O
 				case "avi":
 					icon.setImageResource(R.drawable.webm);
 					break;
+				case "webm":
+					icon.setImageResource(R.drawable.webm);
+					break;
 				case "xcf":
 					icon.setImageResource(R.drawable.xcf);
 					break;

@@ -11,14 +11,24 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -36,11 +46,16 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class mediaViewer extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class mediaViewer extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, MediaPlayer.OnPreparedListener, SurfaceHolder.Callback {
 
-    Connection selectedConnection = null;
-    String[] fileList;
-    int currentFile;
+    private Connection selectedConnection = null;
+    private String[] fileList;
+    private int currentFile;
+    private MediaPlayer mediaPlayer;
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+    private Boolean video = false;
+    private ImageView imageView;
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -123,9 +138,14 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         Button left = findViewById(R.id.left);
         Button right = findViewById(R.id.right);
+        imageView = findViewById(R.id.imageView);
         left.setOnClickListener(this);
         right.setOnClickListener(this);
         findViewById(R.id.media_viewer).setOnLongClickListener(this);
+        surfaceView = findViewById(R.id.surfaceView);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.addCallback(this);
+        //surfaceHolder.setFixedSize(500, 500);
 
         // Set up the user interaction to manually show or hide the system UI.
 
@@ -147,7 +167,6 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
             fileIn.close();
         } catch (IOException i) {
             i.printStackTrace();
-            Log.i ("yeet", "catch");
             return;
         } catch (ClassNotFoundException c) {
             c.printStackTrace();
@@ -183,7 +202,7 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100);
+        delayedHide(0);
     }
 
     private void toggle() {
@@ -231,6 +250,13 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        imageView.setImageResource(android.R.color.transparent);
+        //surfaceHolder.setFormat(PixelFormat.TRANSPARENT);
+        //surfaceHolder.setFormat(PixelFormat.OPAQUE);
+        try {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }catch (Exception e){}
         switch (v.getId()) {
             case R.id.left:
                 if (currentFile > 0) {
@@ -247,25 +273,53 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
     }
 
     private void showMedia () {
-        ImageView imageView = findViewById(R.id.imageView);
-        Log.i("yeet", "show media" + fileList[currentFile]);
+        Log.i("yeet", "1");
         if (!new File(getCacheDir() + "/" + fileList[currentFile]).exists()) {
-            Log.i("yeet", "download 1");
             selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
         }else {
-            Log.i("yeet", selectedConnection.getFileSize(fileList[currentFile]) + "");
             if (selectedConnection.getFileSize(fileList[currentFile]) != new File(getCacheDir() + "/" + fileList[currentFile]).length()) {
                 selectedConnection.downloadFile(fileList[currentFile], getCacheDir() + "/" + fileList[currentFile]);
-                Log.i("yeet", "download 2");
             }
         }
+        Log.i("yeet", "2");
         /*long localSize = 0;
         long serverSize = selectedConnection.getFileSize(fileList[currentFile]);
         while (localSize < serverSize) {
             localSize = new File(getCacheDir() + "/" + fileList[currentFile]).length();
-            Log.i("yeet", localSize + "/" + serverSize);
         }*/
-        imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileList[currentFile]));
+        int length = fileList[currentFile].split("[.]").length;
+        if (length >= 1) {
+            String fileType = fileList[currentFile].split("[.]")[length - 1].toLowerCase();
+            switch (fileType) {
+                case "png":
+                case "jpg":
+                case "jpeg":
+                case "bmp":
+                    Log.i("yeet", "3a");
+                    video = false;
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(getCacheDir() + "/" + fileList[currentFile]));
+                    imageView.setBackgroundColor(0xff000000);
+                    Log.i("yeet", "4a");
+                    break;
+                case "gif":
+                case "webm":
+                case "mp4":
+                    Log.i("yeet", "3b");
+                    video = true;
+                    imageView.setBackgroundColor(0x00000000);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            playVideo();
+                        }
+                    });
+                    Log.i("yeet", "4b");
+                    break;
+                case "avi":
+                case "mkv":
+                    video = true;
+                    break;
+            }
+        }
         final Thread mThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -280,9 +334,7 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
                             newFile = fileList[currentFile - index];
                         }
                         if (!new File(getCacheDir() + "/" + newFile).exists()) {
-                            Log.i("yeet", "downloading " + newFile);
                             selectedConnection.downloadFile(newFile, getCacheDir() + "/" + newFile);
-                            Log.i("yeet", "downloaded " + newFile);
                         }else {
                             if (selectedConnection.getFileSize(newFile) != new File(getCacheDir() + "/" + newFile).length()) {
                                 selectedConnection.downloadFile(newFile, getCacheDir() + "/" + newFile);
@@ -293,6 +345,24 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
             }
         });
         mThread.start();
+    }
+
+    private void playVideo () {
+        try {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setScreenOnWhilePlaying(true);
+            mediaPlayer.setDisplay(surfaceView.getHolder());
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(getCacheDir() + "/" + fileList[currentFile]));
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            }
+        }
     }
 
     @Override
@@ -315,6 +385,34 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mediaPlayer.stop();
+        mediaPlayer.release();
         selectedConnection.disconnect();
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        if (video) {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    playVideo();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
     }
 }

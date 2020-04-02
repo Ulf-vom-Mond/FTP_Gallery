@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements serverSettings.Co
 				out.writeObject(connectionSettings);
 				out.close();
 				fileOut.close();
-				//Log.i("yeet", "created and serialized empty arrayList");
 			} catch (IOException i) {
 				i.printStackTrace();
 			}
@@ -155,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements serverSettings.Co
 				new NavigationView.OnNavigationItemSelectedListener() {
 					@Override
 					public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-						Log.i("yeet", "magiccccc! " + item.toString());
 						lastSelectedServer = item.toString();
 						boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
 						if (handled) {
