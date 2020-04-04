@@ -1,5 +1,6 @@
 package com.noah.ftpgallery.ui.generalSettings;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
@@ -14,7 +15,6 @@ public class GeneralSettingsActivity extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

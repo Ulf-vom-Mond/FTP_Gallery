@@ -46,10 +46,12 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class fileExplorer extends AppCompatActivity implements file_entry.EntryOnClickListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    ArrayList<Fragment> fragmentList = new ArrayList<>();
-    FTPFile[] directory;
-    Connection selectedConnection = null;
-    String selectedConnectionName;
+    private ArrayList<Fragment> fragmentList = new ArrayList<>();
+    private FTPFile[] directory;
+    private Connection selectedConnection = null;
+    private String selectedConnectionName;
+    private static Boolean dirsBeforeFiles = false;
+    private Boolean listHidden = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,21 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
         findViewById(R.id.backArrow).setOnClickListener(this);
         findViewById(R.id.order).setOnClickListener(this);
+
+        ArrayList<String> settings = new ArrayList<>();
+        try {
+            FileInputStream fileIn = new FileInputStream(getFilesDir() + "/settings.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            settings = (ArrayList<String>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            c.printStackTrace();
+        }
+
+        dirsBeforeFiles = settings.get(4).equals("yes ");
 
         ArrayList<Connection> connectionSettings = new ArrayList<>();
         try {
@@ -87,8 +104,10 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
                 selectedConnection = connectionSettings.get(i);
             }
         }
-        selectedConnection.connect();
 
+        selectedConnection.connect();
+        listHidden = settings.get(3).equals("yes ");
+        selectedConnection.setListHiddenFiles(listHidden);
 
         Spinner spinner = (Spinner) findViewById(R.id.criteria); //array mit werten auswählen
         spinner.setOnItemSelectedListener(this);
@@ -97,6 +116,11 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(Integer.parseInt(settings.get(1)));
+
+        Switch order = findViewById(R.id.order);
+        order.setText(settings.get(2));
+        order.setChecked(settings.get(2).equals("descending "));
 
         display();
 
@@ -157,34 +181,40 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
         //sorting_way = "name";
-        switch (sorting_way){       //je nach art sortieren
-            case "size":
-                if (directory[b+1].getSize() < directory[b].getSize()){
-                test = true;
-                    first = directory[b].getSize() + "";
-                    second = directory[b+1].getSize() + "";
-                }
-                break;
-            case "date":
-                first = sdf.format(directory[b].getTimestamp().getTime()) + "";
-                second = sdf.format(directory[b+1].getTimestamp().getTime()) + "";
-                if (first.compareToIgnoreCase(second) >= 0){  //wenn second größer ist, dann positive zahl
-                    test = true;
-                }
-                break;
-            default:
-                first = directory[b].getName();
-                second = directory[b+1].getName();
-                if (first.compareToIgnoreCase(second) >= 0){  //wenn second größer ist, dann positive zahl
-                    test = true;
-                }
-        }
+        if (dirsBeforeFiles && directory[b].isFile() && directory[b + 1].isDirectory()){
+            return true;
+        }else if (dirsBeforeFiles && directory[b].isDirectory() && directory[b + 1].isFile()){
+            return false;
+        }else {
+            switch (sorting_way) {       //je nach art sortieren
+                case "size":
+                    if (directory[b + 1].getSize() < directory[b].getSize()) {
+                        test = true;
+                        first = directory[b].getSize() + "";
+                        second = directory[b + 1].getSize() + "";
+                    }
+                    break;
+                case "date":
+                    first = sdf.format(directory[b].getTimestamp().getTime()) + "";
+                    second = sdf.format(directory[b + 1].getTimestamp().getTime()) + "";
+                    if (first.compareToIgnoreCase(second) >= 0) {  //wenn second größer ist, dann positive zahl
+                        test = true;
+                    }
+                    break;
+                default:
+                    first = directory[b].getName();
+                    second = directory[b + 1].getName();
+                    if (first.compareToIgnoreCase(second) >= 0) {  //wenn second größer ist, dann positive zahl
+                        test = true;
+                    }
+            }
 
-                if (sorting_direction == "desc"){   //bei absteigender sortierung alles umkehren
-                    return !test;
-                }else{
-                    return test;
-                }
+            if (sorting_direction == "desc") {   //bei absteigender sortierung alles umkehren
+                return !test;
+            } else {
+                return test;
+            }
+        }
     }
 
     @Override
@@ -302,7 +332,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
             fragmentTransaction.remove(fragmentList.get(i)).commit();
         }
         fragmentList.clear();
-        selectedConnection.setListHiddenFiles(true);
+        selectedConnection.setListHiddenFiles(listHidden);
         directory = sorting(selectedConnection.listDirectory());
 
 

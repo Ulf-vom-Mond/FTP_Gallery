@@ -56,6 +56,7 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
     private SurfaceHolder surfaceHolder;
     private Boolean video = false;
     private ImageView imageView;
+    private int autoDownload = 6;
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -157,6 +158,20 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         String fileName = intent.getStringExtra("fileName");
         String selectedConnectionName = intent.getStringExtra("selectedConnectionName");
         fileList = intent.getStringArrayExtra("fileList");
+
+        ArrayList<String> settings = new ArrayList<>();
+        try {
+            FileInputStream fileIn = new FileInputStream(getFilesDir() + "/settings.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            settings = (ArrayList<String>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            c.printStackTrace();
+        }
+        autoDownload = Integer.parseInt(settings.get(0));
 
         ArrayList<Connection> connectionSettings = new ArrayList<Connection>();
         try {
@@ -315,8 +330,7 @@ public class mediaViewer extends AppCompatActivity implements View.OnClickListen
         final Thread mThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int autoDownload = 3;
-                for (int i = 0; i <= autoDownload * 2; i++) {
+                for (int i = 0; i <= autoDownload; i++) {
                     String newFile;
                     int index = (int) Math.ceil(i / 2);
                     if ((currentFile - index) >= 0 && (currentFile + index) < (fileList.length)) {

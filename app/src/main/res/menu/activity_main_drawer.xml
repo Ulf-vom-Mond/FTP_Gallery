@@ -15,9 +15,6 @@
             android:icon="@drawable/ic_general_settings"
             android:title="Settings" />
         </group>
-        <group android:id="@+id/serverGroup">
-
-        </group>
         <group android:id="@+id/addServerGroup">
         <item
             android:id="@+id/nav_serverSettings"
