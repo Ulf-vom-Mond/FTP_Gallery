@@ -11,14 +11,14 @@ public class EmptyServerSettingDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialog);
         String tag = getTag();
         String message = "Please enter ";
         if (tag.contains("ipaddress")) {
             message = message + "an IP address or an URL";
         }
         if (tag.contains("username")) {
-            if (tag.contains("ipAddress")) {
+            if (tag.contains("ipaddress")) {
                 message = message + " and a username";
             }else {
                 message = message + "a username";

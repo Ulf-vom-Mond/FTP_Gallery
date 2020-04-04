@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -36,7 +38,7 @@ public class GalleryFragment extends Fragment {
 
     private GalleryViewModel galleryViewModel;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
+    public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel = ViewModelProviders.of(this).get(GalleryViewModel.class);
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -127,13 +129,13 @@ public class GalleryFragment extends Fragment {
         root.findViewById(R.id.introduction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                (new Introduction()).show(getFragmentManager(), "");
             }
         });
         root.findViewById(R.id.about).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                (new About()).show(getFragmentManager(), "");
             }
         });
         root.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
