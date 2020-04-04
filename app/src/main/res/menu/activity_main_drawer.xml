@@ -2,6 +2,7 @@
 <menu android:id="@+id/mainDrawerMenu"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">

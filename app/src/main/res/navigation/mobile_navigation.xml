@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/nav_serverSettings"
         android:name="com.noah.ftpgallery.serverSettings"
-        android:label="Add server"
+        android:label="Configure server"
         tools:layout="@layout/server_settings_fragment" />
 
 </navigation>

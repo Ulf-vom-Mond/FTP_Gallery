@@ -63,6 +63,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 			newButton.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
 			newButton.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
 			newButton.setOnClickListener(this);
+			newButton.setAllCaps(false);
 			connectionList.addView(newButton);
 		}
 		if(connectionSettings.size() != 0) {

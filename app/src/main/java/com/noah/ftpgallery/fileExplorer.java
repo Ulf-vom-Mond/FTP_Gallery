@@ -51,7 +51,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
     private Connection selectedConnection = null;
     private String selectedConnectionName;
     private static Boolean dirsBeforeFiles = false;
-    private Boolean listHidden = false;
+    private Boolean listHidden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
 
         dirsBeforeFiles = settings.get(4).equals("yes ");
+        listHidden = settings.get(3).equals("yes ");
 
         ArrayList<Connection> connectionSettings = new ArrayList<>();
         try {
@@ -99,20 +100,17 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         selectedConnection = null;
 
         for (int i = 0; i < connectionSettings.size(); i++) {
-
             if(connectionSettings.get(i).getConnectionName().equals(selectedConnectionName)){
                 selectedConnection = connectionSettings.get(i);
             }
         }
 
         selectedConnection.connect();
-        listHidden = settings.get(3).equals("yes ");
-        selectedConnection.setListHiddenFiles(listHidden);
 
         Spinner spinner = (Spinner) findViewById(R.id.criteria); //array mit werten auswählen
         spinner.setOnItemSelectedListener(this);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sorting_criteria, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sorting_criteria, R.layout.spinner_item);
             // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -333,6 +331,7 @@ public class fileExplorer extends AppCompatActivity implements file_entry.EntryO
         }
         fragmentList.clear();
         selectedConnection.setListHiddenFiles(listHidden);
+        Log.i("yeet", listHidden + "");
         directory = sorting(selectedConnection.listDirectory());
 
 

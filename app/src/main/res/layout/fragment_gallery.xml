@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
+
     tools:context=".ui.gallery.GalleryFragment">
 
     <LinearLayout
@@ -20,6 +22,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text"
                 android:text="Auto-downloaded files"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"/>
@@ -28,6 +31,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/autoDownload"
                 android:layout_width="wrap_content"
+                android:textColor="@color/selected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_height="wrap_content"
                 android:ems="2"
@@ -52,6 +56,7 @@
             <TextView
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,7 +65,9 @@
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/selected"
             android:id="@+id/criteria"
+            android:backgroundTint="@color/icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/order"/>
@@ -68,6 +75,7 @@
         <Switch
             android:id="@+id/order"
             android:layout_width="wrap_content"
+            android:textColor="@color/selected"
             android:layout_height="wrap_content"
             android:text="ascending "
             android:textOff="absteigend"
@@ -93,6 +101,7 @@
             <TextView
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@color/text"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,6 +110,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/displayHidden"
+                android:textColor="@color/selected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="no "
@@ -123,6 +133,7 @@
 
             <TextView
                 app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_width="wrap_content"
@@ -133,6 +144,7 @@
                 android:id="@+id/dirsBeforeFiles"
                 android:layout_width="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@color/selected"
                 android:layout_height="wrap_content"
                 android:text="no "
                 android:textOff="no"
@@ -158,6 +170,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:textAllCaps="false"
                 android:text="Introduction" />
 
             <Button
@@ -165,11 +178,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="About"
+                android:textAllCaps="false"
                 android:layout_width="wrap_content" />
 
             <Button
                 android:id="@+id/save"
                 android:layout_height="wrap_content"
+                android:textAllCaps="false"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:text="Save settings" />

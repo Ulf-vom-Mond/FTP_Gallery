@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/background"
+
     tools:context=".fileExplorer"
     android:id="@+id/file_explorer">
 
@@ -26,20 +28,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
+                <FrameLayout
                     android:id="@+id/backArrow"
+                    android:background="@xml/button"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                <ImageView
+                    android:id="@+id/image"
                     android:layout_width="50px"
                     android:layout_height="50px"
                     app:srcCompat="@drawable/backarrow"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    android:layout_gravity="center"/>
+                </FrameLayout>
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/criteria"
                     android:layout_margin="1mm"
+                    android:backgroundTint="@color/icon"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -53,6 +63,7 @@
                     android:textOff="absteigend"
                     android:textOn="aufsteigend"
                     android:layout_margin="1mm"
+                    android:textColor="@color/selected"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
@@ -75,9 +86,6 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
-
-
     <!--  <include layout="@layout/content_file_explorer" /> deaktivieren für scrollen-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

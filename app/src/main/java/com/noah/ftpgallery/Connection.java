@@ -176,6 +176,26 @@ public class Connection implements Serializable {
 
 	public void setListHiddenFiles(Boolean setting) {
 		ftp.setListHiddenFiles(setting);
+		if (ftp != null) {
+			final Thread mThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						directoryListing = ftp.listFiles(directory);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			mThread.start();
+			try {
+				mThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void downloadFile(final String fileName, final String localFilePath) {
